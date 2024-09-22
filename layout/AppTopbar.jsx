@@ -2,9 +2,9 @@ import React from "react";
 
 function AppTopbar() {
   return (
-    <div className="layout-topbar-container">
-      <div className="">AppTopbar</div>
-    </div>
+    // <div className="layout-topbar">
+    <div className="">AppTopbar</div>
+    // </div>
   );
 }
 
