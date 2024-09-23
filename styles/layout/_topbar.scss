@@ -16,6 +16,16 @@
   margin-left: calc(300px + #{$layoutPadding});
 }
 
+.topbar-mask {
+  background-color: var(--surface-ground);
+  height: $layoutPadding;
+  position: absolute;
+  z-index: 990;
+  width: 100%;
+  left: 0;
+  top: -$layoutPadding;
+}
+
 @media (max-width: 991px) {
   .layout-topbar {
     position: fixed;

@@ -2,9 +2,10 @@ import React from "react";
 
 function AppTopbar() {
   return (
-    // <div className="layout-topbar">
-    <div className="">AppTopbar</div>
-    // </div>
+    <>
+      <div className="topbar-mask"></div>
+      <div className="">AppTopbar</div>
+    </>
   );
 }
 

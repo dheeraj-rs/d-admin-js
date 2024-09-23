@@ -14,7 +14,6 @@
         position: relative;
         width: calc(100% - (#{$layoutPadding} + #{$layoutPadding}));
       }
-
       .layout-main-container {
         margin-left: 0;
         padding: ($layoutPadding + $layoutPadding) $layoutPadding $layoutPadding
