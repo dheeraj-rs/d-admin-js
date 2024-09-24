@@ -5,7 +5,8 @@
   justify-content: space-between;
   padding: ($layoutMainPaddingTop + $layoutPadding + $layoutPadding)
     $layoutPadding $layoutPadding $layoutPadding;
-  transition: margin-left $transitionDuration;
+  transition: margin-left 0.3s ease-in-out;
+  // transition: margin-left $transitionDuration;
   margin-left: calc(300px + #{$layoutPadding});
 }
 
