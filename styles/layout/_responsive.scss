@@ -1,169 +1,163 @@
-@media screen and (min-width: 1960px) {
-  .layout-main {
-    width: 1504px;
-    margin: 0 auto !important;
-  }
-}
-
 @media (min-width: 992px) {
   .layout-wrapper {
-    &.layout-overlay {
+    &.overlay-topbar {
       .layout-topbar {
-        margin-left: 0 !important;
-        position: relative;
-        width: calc(100% - (#{$layoutPadding} + #{$layoutPadding}));
+        position: absolute;
+      }
+    }
+
+    .layout-sidebar {
+      transition: transform $transition-duration-default
+          $transition-easing-default,
+        left $transition-duration-default $transition-easing-default,
+        width $transition-duration-default $transition-easing-default;
+    }
+
+    // Static sidebar styles
+    &.static-sidebar {
+      .layout-sidebar {
+        width: $sidebar-width-default;
       }
       .layout-main-container {
-        margin-left: 0;
-        padding: ($layoutPadding + $layoutPadding) $layoutPadding $layoutPadding
-          $layoutPadding;
+        margin-left: calc($sidebar-width-default + #{$layout-padding-default});
       }
+      .layout-topbar {
+        margin-left: calc($sidebar-width-default + #{$layout-padding-default});
+        width: calc(
+          100% - ($sidebar-width-default + #{3 * $layout-padding-default})
+        );
+      }
+
+      // Explicitly disable toggle-sidebar when static-sidebar is enabled
+      &.toggle-sidebar {
+        .layout-sidebar {
+          transform: none;
+          left: $layout-padding-default;
+        }
+        .layout-main-container {
+          margin-left: calc(
+            $sidebar-width-default + #{$layout-padding-default}
+          );
+        }
+        .layout-topbar {
+          margin-left: calc(
+            $sidebar-width-default + #{$layout-padding-default}
+          );
+          width: calc(
+            100% - ($sidebar-width-default + #{3 * $layout-padding-default})
+          );
+        }
+      }
+
+      // Prevent toggle-sidebar behavior in any case when static-sidebar is active
+      &:not(.toggle-sidebar) {
+        .layout-sidebar {
+          transform: none;
+          left: $layout-padding-default;
+        }
+        .layout-main-container {
+          margin-left: calc(
+            $sidebar-width-default + #{$layout-padding-default}
+          );
+        }
+        .layout-topbar {
+          margin-left: calc(
+            $sidebar-width-default + #{$layout-padding-default}
+          );
+          width: calc(
+            100% - ($sidebar-width-default + #{3 * $layout-padding-default})
+          );
+        }
+      }
+    }
+
+    // Toggle sidebar styles - only active when static-sidebar is disabled
+    &.toggle-sidebar:not(.static-sidebar) {
       .layout-sidebar {
         transform: translateX(-100%);
         left: 0;
-        top: 6rem;
-        bottom: 1rem;
-        height: calc(100vh - 7rem);
-        border-radius: 0;
+        transition: transform $transition-duration-default
+            $transition-easing-default,
+          left $transition-duration-default $transition-easing-default;
       }
-      &.layout-overlay-active {
+      .layout-main-container {
+        margin-left: 0;
+      }
+      .layout-topbar {
+        margin-left: 0;
+        width: calc(100% - (2 * #{$layout-padding-default}));
+      }
+    }
+
+    // Overlay layout with toggle-sidebar support
+    &.overlay-layout {
+      .layout-sidebar {
+        transform: translateX(-100%);
+        left: 0;
+        transition: transform $transition-duration-default
+            $transition-easing-default,
+          left $transition-duration-default $transition-easing-default;
+      }
+      .layout-main-container {
+        margin-left: 0;
+      }
+      .layout-topbar {
+        margin-left: 0;
+        width: calc(100% - (2 * #{$layout-padding-default}));
+      }
+
+      // Use toggle-sidebar functionality in overlay layout unless static-sidebar is active
+      &:not(.static-sidebar).toggle-sidebar {
         .layout-sidebar {
           transform: translateX(0);
-          top: calc($layoutMainPaddingTop + ($layoutPadding + $layoutPadding));
-          height: calc(100vh - 3 * $layoutPadding - $layoutMainPaddingTop);
+          width: $sidebar-width-default;
+          margin-left: $layout-padding-default;
+        }
+        .layout-mask {
+          display: block;
+          animation: fadein $transition-duration-default;
         }
       }
-    }
-
-    &.layout-static {
-      .layout-main-container {
-        margin-left: calc(300px + $layoutPadding);
-        padding: ($layoutMainPaddingTop + $layoutPadding + $layoutPadding)
-          $layoutPadding $layoutPadding $layoutPadding;
-      }
-      .layout-topbar {
-        margin-left: calc(300px + $layoutPadding);
-      }
-      &.layout-static-inactive {
-        .layout-sidebar {
-          transform: translateX(-100%);
-          left: 0;
-        }
-        .layout-main-container {
-          margin-left: 0;
-          padding-left: 2rem;
-        }
-      }
-    }
-
-    &.layout-topbar-static {
-      .layout-topbar {
-        position: relative;
-        width: calc(100% - 300px - 3 * $layoutPadding);
-      }
-      .layout-main-container {
-        padding-top: 2 * $layoutPadding;
-      }
-      .topbar-mask {
-        display: none;
-      }
-    }
-
-    &.layout-sidebar-overlay {
-      .layout-main-container {
-        margin-left: calc($layoutSidebarWidthOverlay + $layoutPadding);
-      }
-
-      .layout-topbar {
-        margin-left: $layoutSidebarWidthOverlay + $layoutPadding;
-        width: calc(
-          100% -
-            (
-              $layoutSidebarWidthOverlay + #{(
-                  $layoutPadding + $layoutPadding + $layoutPadding
-                )}
-            )
-        ) !important;
-      }
-
-      .layout-sidebar {
-        width: $layoutSidebarWidthOverlay;
-        transition: width 0.3s ease-in-out;
-
-        &:hover {
-          width: 300px;
-          ~ .layout-topbar {
-            right: $layoutPadding !important;
-            margin-left: calc(300px + $layoutPadding);
-            width: calc(100% - 300px - 3 * $layoutPadding) !important;
-            transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
-          }
-          ~ .layout-main-container {
-            margin-left: calc(300px + $layoutPadding);
-            transition: margin-left 0.3s ease-in-out;
-          }
-        }
-      }
-    }
-
-    .layout-mask {
-      display: none;
     }
   }
 }
 
 @media (max-width: 991px) {
+  .layout-main-container {
+    margin-left: 0;
+    @media (max-width: 616px) {
+      padding-top: $layout-mobile-padding-main-top;
+    }
+  }
+  .layout-topbar {
+    margin-left: 0;
+    width: calc(100% - (2 * $layout-padding-default));
+  }
+  .layout-sidebar {
+    transform: translateX(-100%);
+    left: 0;
+    border-radius: 0;
+  }
   .blocked-scroll {
     overflow: hidden;
   }
+
   .layout-wrapper {
-    .layout-main-container {
-      margin-left: 0;
-      padding: calc($layoutMainPaddingTop + 2 * $layoutPadding) $layoutPadding;
-    }
-    .layout-sidebar {
-      transform: translateX(-100%);
-      left: 0;
-      top: 1rem;
-      bottom: 1rem;
-      height: calc(100vh - 2rem);
-      border-radius: 0;
-    }
-    .layout-mask {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 998;
-      width: 100%;
-      height: 100%;
-      background-color: var(--maskbg);
-    }
-    &.layout-topbar-static {
+    &.overlay-topbar {
       .layout-topbar {
-        position: relative;
-      }
-      .layout-main-container {
-        padding-top: 2 * $layoutPadding;
-      }
-      .topbar-mask {
-        display: none;
-      }
-    }
-    &.layout-mobile-active {
-      .layout-sidebar {
-        transform: translateX(0);
-      }
-      .layout-mask {
-        display: block;
-        animation: fadein $transitionDuration;
+        position: absolute;
       }
     }
 
-    &.layout-sidebar-overlay {
-      .layout-topbar {
-        margin-left: 0;
-        width: calc(100% - #{$layoutPadding + $layoutPadding}) !important;
+    &.toggle-sidebar {
+      .layout-sidebar {
+        transform: translateX(0);
+        width: $sidebar-width-default;
+        border-radius: $border-radius-full-right;
+      }
+      .layout-mask {
+        display: block;
+        animation: fadein $transition-duration-default;
       }
     }
   }

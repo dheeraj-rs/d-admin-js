@@ -1,20 +1,18 @@
+// Main container styles
 .layout-main-container {
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
-  justify-content: space-between;
-  padding: ($layoutMainPaddingTop + $layoutPadding + $layoutPadding)
-    $layoutPadding $layoutPadding $layoutPadding;
-  transition: margin-left 0.3s ease-in-out;
-  // transition: margin-left $transitionDuration;
-  margin-left: calc(300px + #{$layoutPadding});
+  margin-left: calc(#{$sidebar-width-overlay} + #{$layout-padding-default});
+  padding: $layout-padding-default;
+  transition: margin-left $transition-duration-default
+    $transition-easing-default;
+  padding-top: $layout-padding-main-top;
 }
 
+// Main content area styles
 .layout-main {
+  min-height: 200vh;
   flex: 1 1 auto;
-  height: 200vh;
-  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.02), 0px 0px 2px rgba(0, 0, 0, 0.05),
-    0px 1px 4px rgba(0, 0, 0, 0.08);
-  border-radius: $borderRadius;
-  padding: $layoutPadding;
+  border-radius: $border-radius-default;
+  box-shadow: $box-shadow-default;
+  padding: $layout-padding-default;
 }
