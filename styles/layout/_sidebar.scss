@@ -11,8 +11,10 @@
   overflow-y: auto;
   user-select: none;
   z-index: 999;
-  padding: 0.5rem 1.5rem;
-  transition: width $transition-duration-default $transition-easing-default;
+  padding: 0.5rem;
+  transition: transform $transition-duration-default $transition-easing-default,
+    left $transition-duration-default $transition-easing-default,
+    width $transition-duration-default $transition-easing-default;
 
   &:hover {
     width: $sidebar-width-default;
@@ -26,16 +28,4 @@
       );
     }
   }
-}
-
-// Main mask styles
-.layout-mask {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 998;
-  width: 100%;
-  height: 100%;
-  background-color: var(--maskbg);
 }

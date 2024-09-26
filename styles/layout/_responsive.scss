@@ -6,17 +6,11 @@
       }
     }
 
-    .layout-sidebar {
-      transition: transform $transition-duration-default
-          $transition-easing-default,
-        left $transition-duration-default $transition-easing-default,
-        width $transition-duration-default $transition-easing-default;
-    }
-
-    // Static sidebar styles
     &.static-sidebar {
       .layout-sidebar {
         width: $sidebar-width-default;
+        transform: none;
+        left: $layout-padding-default;
       }
       .layout-main-container {
         margin-left: calc($sidebar-width-default + #{$layout-padding-default});
@@ -28,68 +22,43 @@
         );
       }
 
-      // Explicitly disable toggle-sidebar when static-sidebar is enabled
+      // Enable toggle-sidebar when static-sidebar is active
       &.toggle-sidebar {
         .layout-sidebar {
-          transform: none;
-          left: $layout-padding-default;
+          transform: translateX(-100%);
+          left: 0;
         }
         .layout-main-container {
-          margin-left: calc(
-            $sidebar-width-default + #{$layout-padding-default}
-          );
+          margin-left: 0;
         }
         .layout-topbar {
-          margin-left: calc(
-            $sidebar-width-default + #{$layout-padding-default}
-          );
-          width: calc(
-            100% - ($sidebar-width-default + #{3 * $layout-padding-default})
-          );
-        }
-      }
-
-      // Prevent toggle-sidebar behavior in any case when static-sidebar is active
-      &:not(.toggle-sidebar) {
-        .layout-sidebar {
-          transform: none;
-          left: $layout-padding-default;
-        }
-        .layout-main-container {
-          margin-left: calc(
-            $sidebar-width-default + #{$layout-padding-default}
-          );
-        }
-        .layout-topbar {
-          margin-left: calc(
-            $sidebar-width-default + #{$layout-padding-default}
-          );
-          width: calc(
-            100% - ($sidebar-width-default + #{3 * $layout-padding-default})
-          );
+          margin-left: 0;
+          width: calc(100% - (2 * #{$layout-padding-default}));
         }
       }
     }
 
-    // Toggle sidebar styles - only active when static-sidebar is disabled
-    &.toggle-sidebar:not(.static-sidebar) {
+    &.toggle-sidebar {
       .layout-sidebar {
-        transform: translateX(-100%);
-        left: 0;
+        transform: translateX(0);
+        width: $sidebar-width-default;
+        left: $layout-padding-default;
         transition: transform $transition-duration-default
             $transition-easing-default,
-          left $transition-duration-default $transition-easing-default;
+          left $transition-duration-default $transition-easing-default,
+          width $transition-duration-default $transition-easing-default;
       }
       .layout-main-container {
-        margin-left: 0;
+        margin-left: calc($sidebar-width-default + #{$layout-padding-default});
       }
       .layout-topbar {
-        margin-left: 0;
-        width: calc(100% - (2 * #{$layout-padding-default}));
+        margin-left: calc($sidebar-width-default + #{$layout-padding-default});
+        width: calc(
+          100% - ($sidebar-width-default + #{3 * $layout-padding-default})
+        );
       }
     }
 
-    // Overlay layout with toggle-sidebar support
     &.overlay-layout {
       .layout-sidebar {
         transform: translateX(-100%);
@@ -106,12 +75,19 @@
         width: calc(100% - (2 * #{$layout-padding-default}));
       }
 
-      // Use toggle-sidebar functionality in overlay layout unless static-sidebar is active
-      &:not(.static-sidebar).toggle-sidebar {
+      // Ensure toggle-sidebar works in overlay-layout
+      &.toggle-sidebar {
         .layout-sidebar {
           transform: translateX(0);
           width: $sidebar-width-default;
-          margin-left: $layout-padding-default;
+          left: $layout-padding-default;
+        }
+        .layout-main-container {
+          margin-left: 0;
+        }
+        .layout-topbar {
+          margin-left: 0;
+          width: calc(100% - (2 * #{$layout-padding-default}));
         }
         .layout-mask {
           display: block;
@@ -123,25 +99,6 @@
 }
 
 @media (max-width: 991px) {
-  .layout-main-container {
-    margin-left: 0;
-    @media (max-width: 616px) {
-      padding-top: $layout-mobile-padding-main-top;
-    }
-  }
-  .layout-topbar {
-    margin-left: 0;
-    width: calc(100% - (2 * $layout-padding-default));
-  }
-  .layout-sidebar {
-    transform: translateX(-100%);
-    left: 0;
-    border-radius: 0;
-  }
-  .blocked-scroll {
-    overflow: hidden;
-  }
-
   .layout-wrapper {
     &.overlay-topbar {
       .layout-topbar {
@@ -160,5 +117,32 @@
         animation: fadein $transition-duration-default;
       }
     }
+
+    .layout-sidebar {
+      transform: translateX(-100%);
+      left: 0;
+      border-radius: 0;
+    }
+    .layout-topbar {
+      margin-left: 0;
+      width: calc(100% - (2 * $layout-padding-default));
+    }
+    .layout-main-container {
+      margin-left: 0;
+    }
+  }
+}
+
+@media (max-width: 616px) {
+  .topbar-main {
+    flex-direction: column;
+    height: auto;
+    gap: $layout-padding-default;
+  }
+  .layout-main-container {
+    padding-top: $layout-mobile-padding-main-top;
+  }
+  .topbar-mini {
+    width: 100%;
   }
 }
