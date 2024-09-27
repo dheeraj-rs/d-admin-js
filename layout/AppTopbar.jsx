@@ -8,7 +8,7 @@ const AppTopbar = () => {
         </nav>
         <h1 className="title">Main Page</h1>
       </div>
-      <div className="topbar-mini">
+      <div className="topbar-config">
         <div className="search-bar">
           <input type="text" placeholder="Search..." className="search-input" />
           <span className="search-icon">&#128269;</span>

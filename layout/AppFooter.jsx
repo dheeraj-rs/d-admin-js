@@ -2,7 +2,7 @@ import React from "react";
 
 function AppFooter() {
   return (
-    <div className="layout-footer">
+    <div className="footer-main">
       <div className="">AppFooter</div>
     </div>
   );

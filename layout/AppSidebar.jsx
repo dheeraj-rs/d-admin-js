@@ -4,7 +4,7 @@ import { MenuProvider } from "./context/menucontext";
 function AppSidebar() {
   return (
     <MenuProvider>
-      <div className="layout-menu">Sidebar</div>
+      <div className="sidebar-menu">Sidebar</div>
     </MenuProvider>
   );
 }

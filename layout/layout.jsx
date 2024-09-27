@@ -6,12 +6,10 @@ import AppFooter from "./AppFooter";
 
 function Layout({ children }) {
   const [activeClasses, setActiveClasses] = useState({
-    "layout-mobile-active": false,
-    "layout-overlay": false,
-    "layout-overlay-active": false,
-    "layout-static": false,
-    "layout-topbar-static": false,
-    "layout-sidebar-overlay": false,
+    "static-sidebar": false,
+    "overlay-layout": false,
+    "toggle-sidebar": false,
+    "overlay-topbar": false,
   });
 
   // Function to toggle a class
@@ -84,7 +82,7 @@ function Layout({ children }) {
         </div>
         <AppFooter />
       </div>
-      <div className="layout-mask"></div>
+      <div className="layout-mask" />
     </div>
   );
 }
