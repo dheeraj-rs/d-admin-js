@@ -1,6 +1,7 @@
 "use client";
 import { LayoutProvider } from "@/layout/context/layoutcontext";
 import "../styles/layout/layout.scss";
+import "drjicons/primeicons.css";
 
 export default function RootLayout({ children }) {
   return (

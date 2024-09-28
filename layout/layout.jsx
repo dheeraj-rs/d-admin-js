@@ -47,13 +47,7 @@ function Layout({ children }) {
       <div className="layout-main-container">
         <div className="layout-main">
           {children}
-          <div
-            style={{
-              width: "100%",
-              height: "100%",
-              flexDirection: "column",
-            }}
-          >
+          <div>
             <button
               style={getButtonStyle(activeClasses["static-sidebar"])}
               onClick={() => toggleClass("static-sidebar")}
@@ -82,7 +76,7 @@ function Layout({ children }) {
         </div>
         <AppFooter />
       </div>
-      <div className="layout-mask" />
+      {/* <div className="layout-mask" /> */}
     </div>
   );
 }
