@@ -1,0 +1,19 @@
+.layout-modal {
+  height: calc(
+    100vh - (#{$layout-padding-default} + #{$layout-padding-main-top})
+  );
+
+  position: fixed;
+  border-radius: $border-radius-default;
+  box-shadow: $box-shadow-default;
+  z-index: 999;
+  transform: translateX(100%);
+  right: 0;
+  bottom: $layout-padding-default;
+
+  transition: transform $transition-duration-default $transition-easing-default,
+    left $transition-duration-default $transition-easing-default,
+    width $transition-duration-default $transition-easing-default;
+
+  background-color: rgba(0, 0, 0, 0.165);
+}

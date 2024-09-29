@@ -1,5 +1,47 @@
-import React from "react";
-const AppTopbar = () => {
+import Link from "next/link";
+import React, { forwardRef, useState } from "react";
+import { menuitem } from "@/public/layout/data";
+
+const NavbarItem = ({ item }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleMouseEnter = () => setIsOpen(true);
+  const handleMouseLeave = () => setIsOpen(false);
+
+  if (item?.items) {
+    return (
+      <li
+        className="navbar-item"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <span className="navbar-link">
+          {item.icon && <i className={item.icon}></i>}
+          {item.label}
+          <i className="pi pi-angle-down"></i>
+        </span>
+        {isOpen && (
+          <ul className="navbar-submenu">
+            {item.items.map((subItem, index) => (
+              <NavbarItem key={index} item={subItem} />
+            ))}
+          </ul>
+        )}
+      </li>
+    );
+  }
+
+  return (
+    <li className="navbar-item">
+      <a href={item.to} className="navbar-link" target={item.target}>
+        {item.icon && <i className={item.icon}></i>}
+        {item.label}
+      </a>
+    </li>
+  );
+};
+
+const AppTopbar = forwardRef((props, ref) => {
   return (
     <div className="topbar-main">
       <div className="topbar-header">
@@ -8,19 +50,44 @@ const AppTopbar = () => {
         </nav>
         <h1 className="title">Main Page</h1>
       </div>
-      <div className="topbar-config">
-        <div className="search-bar">
-          <input type="text" placeholder="Search..." className="search-input" />
-          <span className="search-icon">&#128269;</span>
-        </div>
-        <div className="icons">
-          <button className="icon-button">&#128276;</button>
-          <button className="icon-button">&#127769;</button>
-        </div>
-        <div className="user-profile">🧑🏻‍⚖️</div>
+
+      <ul className="navbar-menu">
+        {menuitem.map((item, index) => (
+          <NavbarItem key={index} item={item} />
+        ))}
+      </ul>
+
+      <button
+        type="button"
+        className="p-link layout-topbar-menu-button layout-topbar-button"
+      >
+        <i className="pi pi-ellipsis-v" />
+      </button>
+      <div className="layout-topbar-menu">
+        <button type="button" className="p-link layout-topbar-button">
+          <i className="pi pi-calendar"></i>
+          <span>Calendar</span>
+        </button>
+        <button type="button" className="p-link layout-topbar-button">
+          <i className="pi pi-user"></i>
+          <span>Profile</span>
+        </button>
+        <Link href="/">
+          <button type="button" className="p-link layout-topbar-button">
+            <i className="pi pi-cog"></i>
+            <span>Settings</span>
+          </button>
+        </Link>
       </div>
+      <button
+        type="button"
+        className="p-link layout-menu-button layout-topbar-button"
+      >
+        <i className="pi pi-bars" />
+      </button>
     </div>
   );
-};
+});
 
+AppTopbar.displayName = "AppTopbar";
 export default AppTopbar;

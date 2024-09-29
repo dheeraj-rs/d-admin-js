@@ -1,6 +1,7 @@
 export const menuitem = [
   {
     label: "Home",
+    icon: "pi pi-home",
     items: [
       {
         label: "Dashboard",
@@ -11,6 +12,7 @@ export const menuitem = [
   },
   {
     label: "sites",
+    icon: "pi pi-globe",
     items: [
       {
         label: "Ecommerce",
@@ -28,6 +30,7 @@ export const menuitem = [
   },
   {
     label: "pages",
+    icon: "pi pi-briefcase",
     items: [
       {
         label: "UI elements",
@@ -166,23 +169,8 @@ export const menuitem = [
     ],
   },
   {
-    label: "pack",
-    items: [
-      {
-        label: "drjicons",
-        icon: "pi pi-desktop",
-        url: "https: //landingwww.npmjs.com/package/drjicons",
-      },
-      {
-        label: "drjFlex",
-        icon: "pi pi-desktop",
-        url: "https: //landingwww.npmjs.com/package/drjflex",
-        target: "_blank",
-      },
-    ],
-  },
-  {
     label: "Utils",
+    icon: "pi pi-desktop",
     items: [
       {
         label: "drjicons",

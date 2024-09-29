@@ -10,6 +10,8 @@ function Layout({ children }) {
     "overlay-layout": false,
     "toggle-sidebar": false,
     "overlay-topbar": false,
+    "toggle-config": false,
+    "toggle-modal": false,
   });
 
   // Function to toggle a class
@@ -72,11 +74,25 @@ function Layout({ children }) {
             >
               OVERLY TOPBAR
             </button>
+            <button
+              style={getButtonStyle(activeClasses["toggle-config"])}
+              onClick={() => toggleClass("toggle-config")}
+            >
+              TOOGLE CONFIG
+            </button>
+            <button
+              style={getButtonStyle(activeClasses["toggle-modal"])}
+              onClick={() => toggleClass("toggle-modal")}
+            >
+              TOOGLE modal
+            </button>
           </div>
         </div>
         <AppFooter />
       </div>
-      {/* <div className="layout-mask" /> */}
+      <div className="layout-config">config</div>
+      <div className="layout-modal">modal</div>
+      <div className="layout-mask" />
     </div>
   );
 }

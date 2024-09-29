@@ -3,8 +3,13 @@
   min-height: 100vh;
   margin-left: calc(#{$sidebar-width-overlay} + #{$layout-padding-default});
   padding: $layout-padding-default;
+
+  // Correct transition syntax
   transition: margin-left $transition-duration-default
-    $transition-easing-default;
+      $transition-easing-default,
+    margin-right $transition-duration-default $transition-easing-default;
+
+  // Padding for the top
   padding-top: $layout-padding-main-top;
 }
 

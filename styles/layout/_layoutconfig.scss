@@ -1,0 +1,20 @@
+.layout-config {
+  background-color: rgba(31, 37, 37, 0.635);
+
+  width: $sidebar-width-hover;
+  height: calc(100vh - 2 * #{$layout-padding-default});
+  position: fixed;
+  top: $layout-padding-default;
+  //   right: $layout-padding-default;
+  border-radius: $border-radius-default;
+  box-shadow: $box-shadow-default;
+  // overflow-y: auto;
+  // user-select: none;
+  z-index: 999;
+
+  transform: translateX(100%);
+  right: 0;
+  transition: transform $transition-duration-default $transition-easing-default,
+    left $transition-duration-default $transition-easing-default,
+    width $transition-duration-default $transition-easing-default;
+}
