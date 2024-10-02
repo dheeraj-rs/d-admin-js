@@ -8,8 +8,8 @@
 
     &.toggle-config {
       .layout-config {
-        transform: translateX(-20%);
-        right: 0;
+        transform: translateX(0);
+        right: $layout-padding-default;
       }
       .layout-main-container {
         margin-right: calc($sidebar-width-overlay + #{$layout-padding-default});
@@ -21,15 +21,38 @@
             (2 * #{$sidebar-width-overlay} + #{4 * $layout-padding-default})
         );
       }
+      .layout-modal {
+        width: calc(
+          100% -
+            ((#{2 * $sidebar-width-hover}) + #{2 * $layout-padding-default})
+        );
+        margin-right: $sidebar-width-overlay + $layout-padding-default;
+      }
+
+      // .layout-mask {
+      //   display: block;
+      //   animation: fadein $transition-duration-default;
+      // }
     }
 
     &.toggle-modal {
-      .layout-modal {
+      .layout-modal-container {
         transform: translateX(0);
         right: $layout-padding-default;
+        width: calc(100% - 2 * $layout-padding-default);
+      }
+      .layout-modal {
+        background-color: chartreuse;
+        height: 100%;
         width: calc(
-          100% - (#{$sidebar-width-overlay} + #{3 * $layout-padding-default})
+          100% - (#{$sidebar-width-overlay} + #{$layout-padding-default})
         );
+        margin-left: auto;
+        margin-right: 0;
+        transition: transform $transition-duration-default
+            $transition-easing-default,
+          left $transition-duration-default $transition-easing-default,
+          width $transition-duration-default $transition-easing-default;
       }
     }
 
@@ -46,6 +69,11 @@
         margin-left: calc($sidebar-width-default + #{$layout-padding-default});
         width: calc(
           100% - ($sidebar-width-default + #{3 * $layout-padding-default})
+        );
+      }
+      .layout-modal {
+        width: calc(
+          100% - (#{$sidebar-width-default} + #{$layout-padding-default})
         );
       }
 
@@ -65,8 +93,8 @@
 
         &.toggle-config {
           .layout-config {
-            transform: translateX(-20%);
-            right: 0;
+            transform: translateX(0);
+            right: $layout-padding-default;
           }
           .layout-main-container {
             margin-right: calc(
@@ -79,13 +107,22 @@
               100% - (#{$sidebar-width-hover} + #{3 * $layout-padding-default})
             );
           }
+          .layout-modal {
+            width: calc(
+              100% - ((#{$sidebar-width-hover}) + #{$layout-padding-default})
+            );
+            margin-right: $sidebar-width-overlay + $layout-padding-default;
+          }
+        }
+        .layout-modal {
+          width: 100%;
         }
       }
 
       &.toggle-config {
         .layout-config {
-          transform: translateX(-20%);
-          right: 0;
+          transform: translateX(0);
+          right: $layout-padding-default;
         }
         .layout-main-container {
           margin-right: calc(
@@ -101,6 +138,16 @@
                   $layout-padding-default}
               )
           );
+        }
+        .layout-modal {
+          width: calc(
+            100% -
+              (
+                (#{$sidebar-width-default} + #{$sidebar-width-hover}) + #{2 *
+                  $layout-padding-default}
+              )
+          );
+          margin-right: $sidebar-width-overlay + $layout-padding-default;
         }
       }
 
@@ -149,8 +196,8 @@
 
       &.toggle-config {
         .layout-config {
-          transform: translateX(-20%);
-          right: 0;
+          transform: translateX(0);
+          right: $layout-padding-default;
         }
         .layout-main-container {
           margin-right: calc(
@@ -167,6 +214,22 @@
               )
           );
         }
+        .layout-modal {
+          width: calc(
+            100% -
+              (
+                (#{$sidebar-width-default} + #{$sidebar-width-hover}) + #{2 *
+                  $layout-padding-default}
+              )
+          );
+          margin-right: $sidebar-width-hover + $layout-padding-default;
+        }
+      }
+      .layout-modal {
+        width: calc(
+          100% - ((#{$sidebar-width-default}) + #{$layout-padding-default})
+        );
+        margin-right: 0;
       }
     }
 
@@ -205,7 +268,8 @@
 
         &.toggle-config {
           .layout-config {
-            transform: translateX(-20%);
+            transform: translateX(0);
+            right: $layout-padding-default;
             top: $layout-padding-default;
             height: calc(100vh - 2 * #{$layout-padding-default});
           }
@@ -221,7 +285,8 @@
 
       &.toggle-config {
         .layout-config {
-          transform: translateX(-20%);
+          transform: translateX(0);
+          right: $layout-padding-default;
           top: $layout-padding-default;
           height: calc(100vh - 2 * #{$layout-padding-default});
         }
@@ -360,6 +425,22 @@
     }
     .layout-main-container {
       margin-left: 0;
+    }
+
+    &.toggle-config {
+      .layout-config {
+        transform: translateX(0);
+        right: $layout-padding-default;
+        top: $layout-padding-default;
+        height: calc(100vh - 2 * #{$layout-padding-default});
+      }
+      .layout-main-container {
+        margin-right: 0;
+      }
+      .layout-topbar {
+        margin-left: 0;
+        width: calc(100% - (2 * #{$layout-padding-default}));
+      }
     }
   }
 }

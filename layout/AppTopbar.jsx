@@ -1,6 +1,7 @@
-import Link from "next/link";
-import React, { forwardRef, useState } from "react";
+// import Link from "next/link";
+import React, { forwardRef, useContext, useState } from "react";
 import { menuitem } from "@/public/layout/data";
+import { LayoutContext } from "./context/layoutcontext";
 
 const NavbarItem = ({ item }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,6 +43,23 @@ const NavbarItem = ({ item }) => {
 };
 
 const AppTopbar = forwardRef((props, ref) => {
+  const { layoutConfig, setLayoutConfig, layoutState, setLayoutState } =
+    useContext(LayoutContext);
+
+  const ToggleConfigBtn = () => {
+    setLayoutState((prevLayoutState) => ({
+      ...prevLayoutState,
+      configSidebarVisible: !prevLayoutState.configSidebarVisible,
+    }));
+  };
+
+  const ToggleSidebarBtn = () => {
+    setLayoutState((prevLayoutState) => ({
+      ...prevLayoutState,
+      profileSidebarVisible: !prevLayoutState.profileSidebarVisible,
+    }));
+  };
+
   return (
     <div className="topbar-main">
       <div className="topbar-header">
@@ -72,16 +90,24 @@ const AppTopbar = forwardRef((props, ref) => {
           <i className="pi pi-user"></i>
           <span>Profile</span>
         </button>
-        <Link href="/">
-          <button type="button" className="p-link layout-topbar-button">
-            <i className="pi pi-cog"></i>
-            <span>Settings</span>
-          </button>
-        </Link>
+        {/* <Link href="/"> */}
+        <button
+          type="button"
+          className="p-link layout-topbar-button"
+          onClick={ToggleConfigBtn}
+        >
+          <i className="pi pi-cog"></i>
+          <span>Settings</span>
+        </button>
+        {/* </Link> */}
       </div>
       <button
         type="button"
         className="p-link layout-menu-button layout-topbar-button"
+        onClick={(e) => {
+          e.stopPropagation();
+          ToggleSidebarBtn();
+        }}
       >
         <i className="pi pi-bars" />
       </button>

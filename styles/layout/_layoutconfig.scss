@@ -1,20 +1,168 @@
-.layout-config {
-  background-color: rgba(31, 37, 37, 0.635);
+// Mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.layout-config {
   width: $sidebar-width-hover;
   height: calc(100vh - 2 * #{$layout-padding-default});
+  background-color: var(--surface-overlay);
   position: fixed;
   top: $layout-padding-default;
-  //   right: $layout-padding-default;
   border-radius: $border-radius-default;
-  box-shadow: $box-shadow-default;
-  // overflow-y: auto;
-  // user-select: none;
-  z-index: 999;
-
+  z-index: 9999;
   transform: translateX(100%);
   right: 0;
+  box-shadow: $box-shadow-default;
   transition: transform $transition-duration-default $transition-easing-default,
     left $transition-duration-default $transition-easing-default,
     width $transition-duration-default $transition-easing-default;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.config-container {
+  padding: 0.5rem;
+  font-family: Arial, sans-serif;
+
+  h3 {
+    font-size: 0.857rem;
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--surface-900);
+    margin: 0.75rem 0;
+  }
+  .config-scale {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    .p-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 2rem;
+    }
+  }
+
+  .config-scale-indicators {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    i {
+      width: 3rem;
+      height: 0.5rem;
+      border-radius: 2px;
+      transition: background-color 0.2s, color 0.2s;
+
+      &.scale-active {
+        background-color: var(--primary-color);
+      }
+
+      &.scale-inactive {
+        background-color: var(--surface-200);
+      }
+    }
+  }
+
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    button {
+      padding: 0.3rem 0.4rem;
+      background-color: var(--surface-hover);
+      border-color: transparent;
+      color: var(--surface-900);
+      font-size: 0.6rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      white-space: normal;
+      word-wrap: break-word;
+
+      &.active {
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+
+      &:hover {
+        background-color: var(--surface-hover);
+      }
+
+      &:focus {
+        @include focused-inset();
+      }
+    }
+  }
+
+  .config-theme-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+
+    .theme-btn {
+      width: 3rem;
+      padding: 0.6rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      font-size: 0.6rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      color: var(--surface-900);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      // Background colors for different themes
+      &.lara-light-indigo {
+        background: linear-gradient(90deg, #fff 50%, #818cf8 50%);
+      }
+
+      &.lara-light-teal {
+        background: linear-gradient(90deg, #fff 50%, #14b8a6 50%);
+      }
+
+      &.lara-dark-indigo {
+        background: linear-gradient(90deg, #030712 50%, #818cf8 50%);
+      }
+      &.lara-dark-teal {
+        background: linear-gradient(90deg, #030712 50%, #14b8a6 50%);
+      }
+
+      // Active state for currently selected theme
+      &.active {
+        border-color: #45a049;
+        box-shadow: 0 0 0 3px rgba(0, 128, 0, 0.3); // Green shadow for active button
+      }
+    }
+  }
+
+  .layout-config-button {
+    @include flex-center;
+    width: 3rem;
+    padding: 0.2rem;
+    background: var(--primary-color);
+    color: var(--primary-color-text);
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    z-index: 999;
+    box-shadow: -0.25rem 0 1rem rgba(0, 0, 0, 0.15);
+    transition: background-color $transition-duration-default;
+
+    &:hover {
+      background: var(--primary-400);
+    }
+  }
 }

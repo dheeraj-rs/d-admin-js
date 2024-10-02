@@ -1,8 +1,5 @@
-.layout-modal {
-  height: calc(
-    100vh - (#{$layout-padding-default} + #{$layout-padding-main-top})
-  );
-
+.layout-modal-container {
+  height: calc(100vh - (2 * #{$layout-padding-default}));
   position: fixed;
   border-radius: $border-radius-default;
   box-shadow: $box-shadow-default;
@@ -16,4 +13,5 @@
     width $transition-duration-default $transition-easing-default;
 
   background-color: rgba(0, 0, 0, 0.165);
+  // padding: $layout-padding-default;
 }

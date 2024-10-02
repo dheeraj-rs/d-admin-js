@@ -42,6 +42,17 @@
         );
       }
     }
+    .toggle-config & {
+      ~ .layout-topbar {
+        width: calc(
+          100% -
+            (
+              #{$sidebar-width-default} + #{$sidebar-width-overlay} + #{4 *
+                $layout-padding-default}
+            )
+        );
+      }
+    }
 
     .layout-menuitem-text,
     .layout-submenu-toggler {
@@ -134,7 +145,7 @@
 
   overflow-y: auto;
   user-select: none;
-  padding: $layout-padding-default;
+  padding: $layout-padding-sidebar;
 
   .sidebar-menu {
     position: relative;
@@ -266,57 +277,71 @@
     height: 3rem;
     position: absolute;
     bottom: 0.5rem;
-    left: $layout-padding-default;
-    right: $layout-padding-default;
-
+    left: $layout-padding-sidebar;
+    right: $layout-padding-sidebar;
     display: flex;
     justify-content: center;
     align-items: center;
     --size-button: 40px;
+
+    // background-color: blueviolet;
+
     // color: white;
 
-    .input {
+    .searchbar-input {
       // padding-left: var(--size-button);
-      padding-left: 47px;
+      padding-left: calc(var(--size-button) + 0.4rem);
+      // padding-left: 47px;
       height: var(--size-button);
       font-size: 15px;
       border: none;
       outline: none;
       width: var(--size-button);
       transition: all ease 0.3s;
-      box-shadow: $box-shadow-default;
+      // box-shadow: $box-shadow-default;
       border-radius: $border-radius-default;
       cursor: pointer;
+      background-color: var(--surface-overlay);
+      border-color: transparent;
     }
 
-    .input:focus,
-    .input:not(:invalid) {
+    .searchbar-input:focus,
+    .searchbar-input:not(:invalid) {
       width: 100%;
       cursor: text;
-      box-shadow: $box-shadow-default;
+      // box-shadow: $box-shadow-default;
     }
 
-    .input:focus + .icon,
-    .input:not(:invalid) + .icon {
+    .searchbar-input:focus + .icon-container,
+    .searchbar-input:not(:invalid) + .icon-container {
       pointer-events: all;
       cursor: pointer;
     }
 
-    .searchbar-container,
-    .icon {
+    // .searchbar-container,
+    .icon-container {
       position: absolute;
       width: var(--size-button);
-      height: var(--size-button);
-      top: 8px;
-      left: 8px;
-      padding: 8px;
+      // width: var(--size-button);
+      height: 100%;
+      top: 0;
+      left: 0;
       pointer-events: none;
-      color: #000000;
+      color: var(--text-color);
+      // background-color: aqua;
     }
 
-    .searchbar-container .icon .search-icon {
+    .icon {
       width: 100%;
       height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .searchbar-container .icon-container .search-icon {
+      width: var(--size-button);
+      height: var(--size-button);
     }
   }
 }

@@ -1,5 +1,5 @@
 .layout-topbar {
-  height: $topbar-hight-default;
+  height: $layout-padding-main-top;
   margin-left: calc(#{$sidebar-width-overlay} + #{$layout-padding-default});
   margin-top: $layout-padding-default;
   width: calc(100% - #{3 * $layout-padding-default} - #{$sidebar-width-hover});
@@ -29,10 +29,9 @@
     box-shadow: $box-shadow-default;
     border-radius: $border-radius-default;
     padding: 0 $layout-padding-default;
-    background: rgba(255, 255, 255, 0.122);
+    background-color: var(--surface-overlay);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.18);
     display: flex;
     align-items: center;
     flex-wrap: wrap;

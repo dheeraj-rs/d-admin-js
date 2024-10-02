@@ -9,7 +9,7 @@ export default function RootLayout({ children }) {
       <head>
         <link
           id="theme-css"
-          href={`/themes/light-indigo/theme.css`}
+          href={`/themes/lara-light-indigo/theme.css`}
           rel="stylesheet"
         />
       </head>
