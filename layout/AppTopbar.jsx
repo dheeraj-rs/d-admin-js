@@ -2,6 +2,7 @@
 import React, { forwardRef, useContext, useState } from "react";
 import { menuitem } from "@/public/layout/data";
 import { LayoutContext } from "./context/layoutcontext";
+import { Dropdown } from "@/utils";
 
 const NavbarItem = ({ item }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -82,15 +83,24 @@ const AppTopbar = forwardRef((props, ref) => {
         <i className="pi pi-ellipsis-v" />
       </button>
       <div className="layout-topbar-menu">
-        <button type="button" className="p-link layout-topbar-button">
-          <i className="pi pi-calendar"></i>
-          <span>Calendar</span>
-        </button>
-        <button type="button" className="p-link layout-topbar-button">
-          <i className="pi pi-user"></i>
-          <span>Profile</span>
-        </button>
-        {/* <Link href="/"> */}
+        <Dropdown
+          button={<i className="pi pi-user"></i>}
+          className="p-link layout-topbar-button"
+          // eslint-disable-next-line react/no-children-prop
+          children={
+            <div className="dropdown-menu">
+              <div className="dropdown-menu__divider" />
+              <div className="dropdown-menu__body">
+                <ul>
+                  <li>1</li>
+                  <li>2</li>
+                  <li>3</li>
+                </ul>
+              </div>
+            </div>
+          }
+        />
+
         <button
           type="button"
           className="p-link layout-topbar-button"
@@ -99,7 +109,6 @@ const AppTopbar = forwardRef((props, ref) => {
           <i className="pi pi-cog"></i>
           <span>Settings</span>
         </button>
-        {/* </Link> */}
       </div>
       <button
         type="button"

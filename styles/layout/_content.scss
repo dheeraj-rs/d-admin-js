@@ -8,15 +8,13 @@
       $transition-easing-default,
     margin-right $transition-duration-default $transition-easing-default;
 
-  // Padding for the top
   padding-top: $layout-padding-main-top + ($layout-padding-default * 2);
-
-  // overflow-y: auto; // Controls vertical scrolling
-  // overflow-x: hidden; // Avoids horizontal scroll, improves UX
 }
 
 // Main content area styles
 .layout-main {
+  background-color: chartreuse;
+
   min-height: 100vh;
   flex: 1 1 auto;
   border-radius: $border-radius-default;
