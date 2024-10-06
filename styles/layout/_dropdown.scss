@@ -12,8 +12,9 @@
 // Dropdown Styles
 .dropdown {
   position: relative;
-
-  background-color: rgb(180, 11, 180);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   @include flex;
 
   &__button {

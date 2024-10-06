@@ -138,17 +138,17 @@ function Layout({ children }) {
   const containerClass = classNames("layout-wrapper", {
     "toggle-modal": layoutState?.modalActive,
     "toggle-config": layoutState?.configSidebarVisible,
-    "toggle-sidebar": layoutState?.profileSidebarVisible,
+    "toggle-sidebar": layoutState?.staticMenuDesktopInactive,
     "overlay-topbar": layoutConfig.navbarMode === "overlay",
     "overlay-layout": layoutConfig.menuMode === "overlay",
     "static-sidebar": layoutConfig.menuMode === "static",
-    "layout-static-inactive":
-      layoutState.staticMenuDesktopInactive &&
-      layoutConfig.menuMode === "static",
-    "layout-overlay-active": layoutState.overlayMenuActive,
-    "layout-mobile-active": layoutState.staticMenuMobileActive,
-    "p-input-filled": layoutConfig.inputStyle === "filled",
-    "p-ripple-disabled": !layoutConfig.ripple,
+    // "layout-static-inactive":
+    //   layoutState.staticMenuDesktopInactive &&
+    //   layoutConfig.menuMode === "static",
+    // "layout-overlay-active": layoutState.overlayMenuActive,
+    // "layout-mobile-active": layoutState.staticMenuMobileActive,
+    // "p-input-filled": layoutConfig.inputStyle === "filled",
+    // "p-ripple-disabled": !layoutConfig.ripple,
   });
 
   return (

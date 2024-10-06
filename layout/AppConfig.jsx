@@ -97,22 +97,6 @@ const AppConfig = () => {
     },
   ];
 
-  const Button = ({ children, icon, className, ...props }) => {
-    return (
-      <button
-        className={classNames(
-          "p-2 rounded-md text-sm font-medium transition-colors",
-          "bg-teal-500 text-white hover:bg-teal-600",
-          className
-        )}
-        {...props}
-      >
-        {icon && <i className={`${icon}`}></i>}
-        {children}
-      </button>
-    );
-  };
-
   return (
     <div className="config-container">
       <h3>Sidebar</h3>

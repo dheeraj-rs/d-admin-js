@@ -1,8 +1,17 @@
-// import Link from "next/link";
-import React, { forwardRef, useContext, useState } from "react";
-import { menuitem } from "@/public/layout/data";
+/* eslint-disable react/no-children-prop */
+import Link from "next/link";
+import React, {
+  forwardRef,
+  useContext,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { LayoutContext } from "./context/layoutcontext";
-import { Dropdown } from "@/utils";
+import { classNames, Dropdown } from "@/utils";
+import { menuitem } from "@/public/layout/data";
+import AppConfig from "./AppConfig";
+import MobileDropdown from "./MobileDropdown";
 
 const NavbarItem = ({ item }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,8 +53,24 @@ const NavbarItem = ({ item }) => {
 };
 
 const AppTopbar = forwardRef((props, ref) => {
-  const { layoutConfig, setLayoutConfig, layoutState, setLayoutState } =
-    useContext(LayoutContext);
+  const {
+    layoutConfig,
+    layoutState,
+    onMenuToggle,
+    setLayoutState,
+    showProfileSidebar,
+  } = useContext(LayoutContext);
+  const [toggle, setToggle] = useState(false);
+
+  const menubuttonRef = useRef(null);
+  const topbarmenuRef = useRef(null);
+  const topbarmenubuttonRef = useRef(null);
+
+  useImperativeHandle(ref, () => ({
+    menubutton: menubuttonRef.current,
+    topbarmenu: topbarmenuRef.current,
+    topbarmenubutton: topbarmenubuttonRef.current,
+  }));
 
   const ToggleConfigBtn = () => {
     setLayoutState((prevLayoutState) => ({
@@ -54,15 +79,20 @@ const AppTopbar = forwardRef((props, ref) => {
     }));
   };
 
-  const ToggleSidebarBtn = () => {
-    setLayoutState((prevLayoutState) => ({
-      ...prevLayoutState,
-      profileSidebarVisible: !prevLayoutState.profileSidebarVisible,
-    }));
-  };
-
   return (
     <div className="topbar-main">
+      {/* <Link href="/" className="layout-topbar-logo">
+        <img
+          src={`/layout/images/logo-${
+            layoutConfig.colorScheme !== "light" ? "white" : "dark"
+          }.svg`}
+          width="47.22px"
+          height="35px"
+          alt="logo"
+        />
+        <span>DHEERAJ</span>
+      </Link> */}
+
       <div className="topbar-header">
         <nav className="breadcrumb">
           <span className="breadcrumb-link">Pages</span> / Main Page
@@ -70,56 +100,62 @@ const AppTopbar = forwardRef((props, ref) => {
         <h1 className="title">Main Page</h1>
       </div>
 
+      <button
+        ref={menubuttonRef}
+        type="button"
+        className="p-link layout-menu-button layout-topbar-button"
+        onClick={onMenuToggle}
+      >
+        <i className="pi pi-bars" />
+      </button>
+
       <ul className="navbar-menu">
         {menuitem.map((item, index) => (
           <NavbarItem key={index} item={item} />
         ))}
       </ul>
 
-      <button
+      {/* <button
+        ref={topbarmenubuttonRef}
         type="button"
         className="p-link layout-topbar-menu-button layout-topbar-button"
+        onClick={showProfileSidebar}
       >
         <i className="pi pi-ellipsis-v" />
-      </button>
-      <div className="layout-topbar-menu">
-        <Dropdown
-          button={<i className="pi pi-user"></i>}
-          className="p-link layout-topbar-button"
-          // eslint-disable-next-line react/no-children-prop
-          children={
-            <div className="dropdown-menu">
-              <div className="dropdown-menu__divider" />
-              <div className="dropdown-menu__body">
-                <ul>
-                  <li>1</li>
-                  <li>2</li>
-                  <li>3</li>
-                </ul>
-              </div>
-            </div>
-          }
-        />
+      </button> */}
 
+      <div
+        ref={topbarmenuRef}
+        className={classNames("layout-topbar-menu", {
+          "layout-topbar-menu-mobile-active": layoutState.profileSidebarVisible,
+        })}
+      >
         <button
           type="button"
           className="p-link layout-topbar-button"
           onClick={ToggleConfigBtn}
         >
+          <i className="pi pi-user"></i>
+          <span>Profile</span>
+        </button>
+
+        {/* <button type="button" className="p-link layout-topbar-button">
           <i className="pi pi-cog"></i>
           <span>Settings</span>
-        </button>
+        </button> */}
+
+        <Dropdown
+          button={<i className="pi pi-cog"></i>}
+          className="p-link layout-topbar-button "
+          children={<MobileDropdown />}
+        />
       </div>
-      <button
-        type="button"
-        className="p-link layout-menu-button layout-topbar-button"
-        onClick={(e) => {
-          e.stopPropagation();
-          ToggleSidebarBtn();
-        }}
-      >
-        <i className="pi pi-bars" />
-      </button>
+
+      <Dropdown
+        button={<i className="pi pi-ellipsis-v" />}
+        className="p-link layout-topbar-menu-button"
+        children={<MobileDropdown />}
+      />
     </div>
   );
 });

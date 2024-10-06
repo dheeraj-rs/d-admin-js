@@ -385,6 +385,16 @@
 
 @media (max-width: 991px) {
   .layout-wrapper {
+    .layout-topbar-menu-button {
+      display: inline-flex;
+      margin-left: 0;
+      order: 3;
+    }
+
+    .layout-topbar-button {
+      display: none;
+    }
+
     &.overlay-topbar {
       .layout-topbar {
         position: absolute;
@@ -448,9 +458,18 @@
 @media (max-width: 368px) {
   .layout-topbar {
     // flex-direction: column;
-    height: auto;
+    // height: auto;
     gap: $layout-padding-default;
   }
+
+  .topbar-header {
+    // background-color: grey;
+  }
+  .layout-topbar-menu {
+    // background-color: darkslategrey;
+    width: max-content;
+  }
+
   .layout-main-container {
     padding-top: $layout-mobile-padding-main-top;
   }
@@ -458,10 +477,10 @@
     width: 100%;
   }
 
-  .layout-topbar-menu {
-    width: 100%;
-    display: flex;
-    justify-content: end;
-    flex-wrap: wrap;
-  }
+  // .layout-topbar-menu{
+  //   width: 100%;
+  //   display: flex;
+  //   justify-content: end;
+  //   flex-wrap: wrap;
+  // }
 }
