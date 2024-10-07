@@ -11,7 +11,7 @@ import { LayoutContext } from "./context/layoutcontext";
 import { classNames, Dropdown } from "@/utils";
 import { menuitem } from "@/public/layout/data";
 import AppConfig from "./AppConfig";
-import MobileDropdown from "./MobileDropdown";
+import AppConfigbox from "./AppConfigbox";
 
 const NavbarItem = ({ item }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -147,14 +147,14 @@ const AppTopbar = forwardRef((props, ref) => {
         <Dropdown
           button={<i className="pi pi-cog"></i>}
           className="p-link layout-topbar-button "
-          children={<MobileDropdown />}
+          children={<AppConfigbox />}
         />
       </div>
 
       <Dropdown
         button={<i className="pi pi-ellipsis-v" />}
         className="p-link layout-topbar-menu-button"
-        children={<MobileDropdown />}
+        children={<AppConfigbox />}
       />
     </div>
   );

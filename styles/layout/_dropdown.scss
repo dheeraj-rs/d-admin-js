@@ -22,7 +22,7 @@
     // background-color: var(--surface-overlay); // Background color
     color: var(--text-color-secondary);
     border-radius: 0.25rem; // Example border radius
-    padding: 0.5rem 1rem;
+    // padding: 0.5rem 1rem;
     cursor: pointer;
     @include transition(background-color, 200ms); // Button transition
 
@@ -37,7 +37,7 @@
 
     padding: 0.5rem 0; // Top and bottom padding
     top: 3.7rem;
-    right: 0;
+    right: -$layout-padding-default;
     // left: -11.25rem; // Adjust as necessary
     width: max-content;
 
@@ -113,6 +113,15 @@
       &:hover {
         color: darken(#ef4444, 10%); // Darker on hover
       }
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .dropdown {
+    &__content {
+      top: 2.7rem;
+      right: -$layout-padding-default;
     }
   }
 }
