@@ -1,21 +1,20 @@
-// Main container styles
-.layout-main-container {
+.layout__main {
+  background-color: rgba(52, 52, 52, 0.992);
   min-height: 100vh;
-  margin-left: calc(#{$sidebar-width-overlay} + #{$layout-padding-default});
-  padding: $layout-padding-default;
-  // Correct transition syntax
+  padding-top: $layout-padding-default;
+  padding-bottom: $layout-padding-default;
   transition: margin-left $transition-duration-default
       $transition-easing-default,
     margin-right $transition-duration-default $transition-easing-default;
-
-  padding-top: $layout-padding-main-top + ($layout-padding-default * 2);
 }
 
-// Main content area styles
-.layout-main {
-  min-height: 100vh;
+.layout__content {
+  background-color: rgba(4, 93, 99, 0.318);
+  min-height: 200vh;
   flex: 1 1 auto;
+  padding: $layout-content-padding;
+  margin-left: $layout-padding-default;
+  margin-right: $layout-padding-default;
   border-radius: $border-radius-default;
   box-shadow: $box-shadow-default;
-  padding: $layout-padding-default;
 }

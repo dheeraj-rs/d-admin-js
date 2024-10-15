@@ -12,6 +12,7 @@ const AppConfig = () => {
       menuMode: value,
     }));
   };
+
   const changeNavbarMode = (value) => {
     setLayoutConfig((prevState) => ({
       ...prevState,

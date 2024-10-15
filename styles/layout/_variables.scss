@@ -1,26 +1,33 @@
-// ** Layout Padding Variables **
-$layout-padding-default: 1rem; // Default padding
-$layout-padding-sidebar: 1rem; // Default padding
-$layout-padding-button: 0.7rem; // Default padding
-$layout-padding-main-top: 5rem; // Padding top
-$layout-mobile-padding-main-top: 11rem; // Padding top
-$layout-sidebar-padding-bottom: 3rem; // Padding bottom
-$topbar-hight-default: 5rem; // Layout Topbar hight
-// ** Sidebar Width **
-$sidebar-width-default: 300px; // Default sidebar width
-$sidebar-width-hover: 5rem; // Sidebar hover width
-
-$topbar-height-default: 5rem; // Layout Topbar height
-$sidebar-width-overlay: 5rem; // Sidebar overlay width
+// ** Padding Variables **
+$layout-padding-default: 0.5rem;
+$layout-content-padding: 0.5rem;
 
 // ** Border Radius Variables **
-$border-radius-default: 12px; // Default border radius
-$border-radius-full-right: 0 $border-radius-default $border-radius-default 0; // Full Bottom right radius
+$border-radius-default: 12px;
 
 // ** Box Shadow Variables **
 $box-shadow-default: 0px 3px 5px rgba(0, 0, 0, 0.02),
   0px 0px 2px rgba(0, 0, 0, 0.05), 0px 1px 4px rgba(0, 0, 0, 0.08); // Default box shadow
 
 // ** Transition Variables **
-$transition-duration-default: 0.3s; // Default transition duration
-$transition-easing-default: ease-in-out; // Default transition easing
+$transition-duration-default: 0.3s;
+$transition-duration-modal: 0.5s;
+$transition-easing-default: ease-in-out;
+
+$layout-sidebar-padding-bottom: 5rem;
+
+// ** Topbar Variables **
+$notification-topbar-height: 2rem;
+$notification-topbar-radius: 5px;
+$layout-topbar-gap: 0.5rem;
+$layout-topbar-hight: 5rem;
+
+// ** Bottombar Variables **
+$layout-bottombar-width: 5rem;
+$layout-bottombar-hight: 5rem;
+$layout-bottombar-mobile-hight: 4rem;
+
+// ** Sidebar Variables **
+$sidebar-width-default: 300px;
+$sidebar-width-mini: 5rem;
+$sidebar-height-mini: 5rem;

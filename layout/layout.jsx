@@ -1,5 +1,11 @@
 "use client";
-import React, { useContext, useEffect, useRef, createContext } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  createContext,
+  useState,
+} from "react";
 import { LayoutContext } from "./context/layoutcontext";
 import { usePathname, useSearchParams } from "next/navigation";
 import { classNames } from "@/utils";
@@ -9,10 +15,13 @@ import AppFooter from "./AppFooter";
 import AppConfig from "./AppConfig";
 
 function Layout({ children }) {
+  const [actve, setActive] = useState(false);
   const { layoutConfig, layoutState, setLayoutState } =
     useContext(LayoutContext);
   const topbarRef = useRef(null);
-  const sidebarRef = useRef(null);
+  const leftSidebarRef = useRef(null);
+  const rightSidebarRef = useRef(null);
+  const bottomBarRef = useRef(null);
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -135,41 +144,71 @@ function Layout({ children }) {
 
   console.log("->", layoutState?.configSidebarVisible);
 
-  const containerClass = classNames("layout-wrapper", {
-    "toggle-modal": layoutState?.modalActive,
-    "toggle-config": layoutState?.configSidebarVisible,
-    "toggle-sidebar": layoutState?.staticMenuDesktopInactive,
-    "overlay-topbar": layoutConfig.navbarMode === "overlay",
-    "overlay-layout": layoutConfig.menuMode === "overlay",
-    "static-sidebar": layoutConfig.menuMode === "static",
-    // "layout-static-inactive":
-    //   layoutState.staticMenuDesktopInactive &&
-    //   layoutConfig.menuMode === "static",
-    // "layout-overlay-active": layoutState.overlayMenuActive,
-    // "layout-mobile-active": layoutState.staticMenuMobileActive,
-    // "p-input-filled": layoutConfig.inputStyle === "filled",
-    // "p-ripple-disabled": !layoutConfig.ripple,
-  });
+  // const containerClass = classNames("layout-wrapper", {
+  //   "toggle-modal": layoutState?.modalActive,
+  //   "toggle-config": layoutState?.configSidebarVisible,
+  //   "toggle-sidebar": layoutState?.staticMenuDesktopInactive,
+  //   "overlay-topbar": layoutConfig.navbarMode === "overlay",
+  //   "overlay-layout": layoutConfig.menuMode === "overlay",
+  //   "static-sidebar": layoutConfig.menuMode === "static",
+  // });
+
+  const notificationText = `You are being redirected to the authorized application. If your browser does not redirect you back, please visit this setup page to continue. You are being redirected to the authorized application. If your browser does not redirect you back, please visit this setup page to continue.`;
 
   return (
-    <div className={`layout-wrapper ${containerClass}`}>
-      <div ref={sidebarRef} className="layout-sidebar">
-        <AppSidebar />
-      </div>
-      <div className="layout-topbar">
-        <AppTopbar ref={topbarRef} />
-      </div>
-      <div className="layout-main-container">
-        <div className="layout-main">{children}</div>
-        <AppFooter />
-      </div>
-      <div className="layout-config">
-        <AppConfig />
-      </div>
-      <div className="layout-modal-container">
-        <div className="layout-modal">modal</div>
-      </div>
-      <div className="layout-mask" />
+    <div
+      className={`layout-wrapper layout__topbar-fixed3 layout__bottombar-mobile-active ${
+        actve ? "layout__sidebar-mini-active" : ""
+      }   layout__sidebar-default-active3 `}
+
+      // className={`layout-wrapper layout__topbar-fixed3 layout__sidebar-overlay3 layout__sidebar-static3 layout__notification-bar-active3 layout__bottombar-active3 layout__modal-active3 layout__bottombar-active3 ${
+      //   actve ? "layout__sidebar-mini-active" : ""
+      // } layout__sidebar-default-active3 layout__sidebar-mini-hover-overlay-active3  layout__sidebar-mini-hover-to-default-active3   layout__sidebar-mini-active3 layout__sidebar-static3    layout__sidebar-mini-active3 layout__modal-active3  layout__bottombar-active3   `}
+    >
+      <aside ref={leftSidebarRef} className="layout__sidebar">
+        <div className="layout__sidebar-content">
+          <AppSidebar />
+        </div>
+      </aside>
+
+      <aside ref={rightSidebarRef} className="layout__sidebar-right">
+        <div className="layout__sidebar-right-content"></div>
+      </aside>
+
+      <main className="layout__main">
+        <header className="layout__topbar">
+          <div className="layout__notification-bar">
+            <div className="layout__notification-content">
+              {notificationText}
+            </div>
+          </div>
+          <nav ref={topbarRef} className="layout__nav">
+            Navbar
+          </nav>
+        </header>
+        <div className="layout__content">
+          <div className="layout__content-inner">
+            {children}
+
+            <AppFooter />
+            <button
+              onClick={() => {
+                setActive(!actve);
+              }}
+            >
+              checking button checking button checking button checking button
+              checking button checking button checking button
+            </button>
+          </div>
+        </div>
+
+        <div ref={bottomBarRef} className="layout__bottombar">
+          <div className="layout__bottombar-content">bottombar</div>
+        </div>
+      </main>
+
+      <div className="layout__modal"></div>
+      <div className="layout__overlay" />
     </div>
   );
 }

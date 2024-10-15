@@ -24,8 +24,6 @@ export const LayoutProvider = ({ children }) => {
     modalActive: false,
   });
 
-  // console.log("layoutState :", layoutState);
-
   const isDesktop = () => {
     return window.innerWidth > 991;
   };

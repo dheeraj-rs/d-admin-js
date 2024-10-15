@@ -4,14 +4,14 @@ import { LayoutContext } from "./context/layoutcontext";
 
 const MenuModeRadioGroup = ({ selectedMode, onChange }) => {
   const navbarOptions = [
-    { value: "navbar-static", label: "Static" },
-    { value: "navbar-overlay", label: "Overlay" },
+    { value: "static", label: "Static" },
+    { value: "overlay", label: "Overlay" },
   ];
 
   const sidebarOptions = [
-    { value: "sidebar-static", label: "Static" },
-    { value: "sidebar-overlay", label: "Overlay" },
-    { value: "sidebar-horizontal", label: "Auto" },
+    { value: "auto", label: "Auto" },
+    { value: "static", label: "Static" },
+    { value: "overlay", label: "Overlay" },
   ];
 
   const modes = [
@@ -21,32 +21,34 @@ const MenuModeRadioGroup = ({ selectedMode, onChange }) => {
 
   return (
     <div className="menu-mode-radio-group">
-      <div className="mode-selection">
+      <div className="mode-selection2">
         {modes.map((mode) => (
-          <label key={mode.value} className="radio-option">
+          <label key={mode.value} className="radio-option2">
             <input
               type="radio"
               name="menuMode"
               value={mode.value}
               checked={selectedMode === mode.value}
-              onChange={(e) => onChange(e.target.value)}
+              onChange={(e) => onChange(e.target.value, mode.value)}
             />
-            <span className="radio-label">{mode.label}</span>
+            <p className="radio-label">{mode.label}</p>
           </label>
         ))}
       </div>
 
+      {selectedMode === "navbar"}
+
       {selectedMode === "navbar" && (
         <div className="navbar-options">
           {navbarOptions.map((option) => (
-            <label key={option.value} className="radio-option">
+            <label key={option.value} className="radio-option2">
               <input
                 type="radio"
                 name="navbarOptions"
                 value={option.value}
-                onChange={() => onChange(option.value)}
+                onChange={() => onChange(option.value, selectedMode)}
               />
-              <span className="radio-label">{option.label}</span>
+              <p className="radio-label2">{option.label}</p>
             </label>
           ))}
         </div>
@@ -55,14 +57,14 @@ const MenuModeRadioGroup = ({ selectedMode, onChange }) => {
       {selectedMode === "sidebar" && (
         <div className="sidebar-options">
           {sidebarOptions.map((option) => (
-            <label key={option.value} className="radio-option">
+            <label key={option.value} className="radio-option2">
               <input
                 type="radio"
                 name="sidebarOptions"
                 value={option.value}
-                onChange={() => onChange(option.value)}
+                onChange={() => onChange(option.value, selectedMode)}
               />
-              <span className="radio-label">{option.label}</span>
+              <p className="radio-label2">{option.label}</p>
             </label>
           ))}
         </div>
@@ -115,7 +117,7 @@ const ThemeButton = ({ theme, label, isActive, onClick }) => {
       onClick={onClick}
     >
       <div className="theme-icon"></div>
-      <span>{label}</span>
+      <p>{label}</p>
     </button>
   );
 };
@@ -132,7 +134,9 @@ const AppConfigbox = () => {
     setMenuHeight(height);
   };
 
-  const updateMenuMode = (value) => {
+  const updateMenuMode = (value, type) => {
+    console.log("value :", value);
+    console.log("type :", type);
     setLayoutConfig((prevState) => ({
       ...prevState,
       menuMode: value,
@@ -153,21 +157,33 @@ const AppConfigbox = () => {
     setLayoutConfig((prevState) => ({ ...prevState, theme, colorScheme }));
   };
 
-  const replaceLink = (linkElement, href) => {
-    const id = linkElement.getAttribute("id");
-    const cloneLinkElement = linkElement.cloneNode(true);
-    cloneLinkElement.setAttribute("href", href);
-    cloneLinkElement.setAttribute("id", id + "-clone");
+  const isIE = () => {
+    return /(MSIE|Trident\/|Edge\/)/i.test(window.navigator.userAgent);
+  };
 
-    linkElement.parentNode.insertBefore(
-      cloneLinkElement,
-      linkElement.nextSibling
-    );
-
-    cloneLinkElement.addEventListener("load", () => {
-      linkElement.remove();
-      cloneLinkElement.setAttribute("id", id);
-    });
+  const replaceLink = (linkElement, href, callback) => {
+    if (isIE()) {
+      linkElement.setAttribute("href", href);
+      if (callback) {
+        callback();
+      }
+    } else {
+      const id = linkElement.getAttribute("id");
+      const cloneLinkElement = linkElement.cloneNode(true);
+      cloneLinkElement.setAttribute("href", href);
+      cloneLinkElement.setAttribute("id", id + "-clone");
+      linkElement.parentNode.insertBefore(
+        cloneLinkElement,
+        linkElement.nextSibling
+      );
+      cloneLinkElement.addEventListener("load", () => {
+        linkElement.remove();
+        cloneLinkElement.setAttribute("id", id);
+        if (callback) {
+          callback();
+        }
+      });
+    }
   };
 
   useEffect(() => {
@@ -282,7 +298,7 @@ const AppConfigbox = () => {
                           {item.icon && (
                             <i className={`pi pi-${item.icon}`}></i>
                           )}
-                          <span>{item.label}</span>
+                          <p className="config-item-label">{item.label}</p>
                         </div>
                       )}
                     </ConfigMenuItem>

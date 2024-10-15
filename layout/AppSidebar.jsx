@@ -42,46 +42,7 @@ const AppSidebar = () => {
 
   return (
     <MenuProvider>
-      <div className="sidebar-menu-container">
-        <div className="searchbar-container">
-          <input
-            type="text"
-            className="searchbar-input"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search menu items..."
-          />
-          <div className="icon-container">
-            <div className="icon">
-              {searchTerm && !hasSearchResults ? (
-                <i className="pi pi-exclamation-triangle"></i>
-              ) : (
-                <i className="pi pi-search search-icon"></i>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="menu-content">
-          <ul className="sidebar-menu">
-            {(searchTerm && hasSearchResults
-              ? filteredMenuItems
-              : menuitem
-            ).map((item, i) =>
-              !item?.seperator ? (
-                <AppMenuitem
-                  item={item}
-                  root={true}
-                  index={i}
-                  key={item.label}
-                />
-              ) : (
-                <li key={`separator-${i}`} className="menu-separator"></li>
-              )
-            )}
-          </ul>
-        </div>
-      </div>
+      <div className="sidebar-menu-container"></div>
     </MenuProvider>
   );
 };
