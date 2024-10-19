@@ -13,16 +13,16 @@ const AppMenuitem = (props) => {
   const { activeMenu, setActiveMenu } = useContext(MenuContext);
   // const { layoutConfig } = useContext(LayoutContext);
 
-  const item = props.item;
-  const key = props.parentKey
-    ? props.parentKey + "-" + props.index
+  const item = props?.item;
+  const key = props?.parentKey
+    ? props?.parentKey + "-" + props?.index
     : String(props.index);
 
-  const isActiveRoute = item.to && pathname === item.to;
+  const isActiveRoute = item?.to && pathname === item?.to;
   const active = activeMenu === key || activeMenu.startsWith(key + "-");
 
   const onRouteChange = (url) => {
-    if (item.to && item.to === url) {
+    if (item?.to && item?.to === url) {
       setActiveMenu(key);
     }
   };
@@ -34,30 +34,30 @@ const AppMenuitem = (props) => {
 
   const itemClick = (event) => {
     //avoid processing disabled items
-    if (item.disabled) {
+    if (item?.disabled) {
       event.preventDefault();
       return;
     }
 
     //execute command
-    if (item.command) {
-      item.command({ originalEvent: event, item: item });
+    if (item?.command) {
+      item?.command({ originalEvent: event, item: item });
     }
 
     // toggle active state
-    if (item.items) setActiveMenu(active ? props.parentKey : key);
+    if (item?.items) setActiveMenu(active ? props.parentKey : key);
     else setActiveMenu(key);
   };
 
-  const subMenu = item.items && item.visible !== false && (
+  const subMenu = item?.items && item?.visible !== false && (
     <CSSTransition
       timeout={{ enter: 1000, exit: 450 }}
       classNames="layout-submenu"
       in={props.root ? true : active}
-      key={item.label}
+      key={item?.label}
     >
       <ul>
-        {item.items.map((child, i) => {
+        {item?.items.map((child, i) => {
           return (
             <AppMenuitem
               item={child}
@@ -80,45 +80,45 @@ const AppMenuitem = (props) => {
   return (
     <li
       className={classNames({
-        "layout-root-menuitem": props.root,
+        "layout-root-menuitem": props?.root,
         "active-menuitem": active,
       })}
     >
-      {props.root && item.visible !== false && (
-        <div className="layout-menuitem-root-text">{item.label}</div>
+      {props?.root && item?.visible !== false && (
+        <div className="layout-menuitem-root-text">{item?.label}</div>
       )}
-      {(!item.to || item.items) && item.visible !== false ? (
+      {(!item?.to || item?.items) && item?.visible !== false ? (
         <a
-          href={item.url}
+          href={item?.url}
           onClick={(e) => itemClick(e)}
-          className={classNames(item.className, "p-ripple")}
+          className={classNames(item?.className, "p-ripple")}
           style={container}
-          target={item.target}
+          target={item?.target}
           tabIndex={0}
         >
-          <i className={classNames("layout-menuitem-icon", item.icon)}></i>
-          <span className="layout-menuitem-text">{item.label}</span>
-          {item.items && (
+          <i className={classNames("layout-menuitem-icon", item?.icon)}></i>
+          <span className="layout-menuitem-text">{item?.label}</span>
+          {item?.items && (
             <i className="pi pi-angle-down layout-submenu-toggler"></i>
           )}
           <Ripple />
         </a>
       ) : null}
-      {item.to && !item.items && item.visible !== false ? (
+      {item?.to && !item?.items && item?.visible !== false ? (
         <Link
-          href={item.to}
-          replace={item.replaceUrl}
-          target={item.target}
+          href={item?.to}
+          replace={item?.replaceUrl}
+          target={item?.target}
           onClick={(e) => itemClick(e)}
-          className={classNames(item.className, "p-ripple", {
+          className={classNames(item?.className, "p-ripple", {
             "active-route": isActiveRoute,
           })}
           style={container}
           tabIndex={0}
         >
-          <i className={classNames("layout-menuitem-icon", item.icon)}></i>
-          <span className="layout-menuitem-text">{item.label}</span>
-          {item.items && (
+          <i className={classNames("layout-menuitem-icon", item?.icon)}></i>
+          <span className="layout-menuitem-text">{item?.label}</span>
+          {item?.items && (
             <i className="pi  pi-angle-down layout-submenu-toggler"></i>
           )}
           <Ripple />

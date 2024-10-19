@@ -1,5 +1,4 @@
 .layout__main {
-  background-color: rgba(52, 52, 52, 0.992);
   min-height: 100vh;
   padding-top: $layout-padding-default;
   padding-bottom: $layout-padding-default;
@@ -17,4 +16,5 @@
   margin-right: $layout-padding-default;
   border-radius: $border-radius-default;
   box-shadow: $box-shadow-default;
+  position: relative;
 }

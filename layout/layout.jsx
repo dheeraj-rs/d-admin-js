@@ -157,13 +157,15 @@ function Layout({ children }) {
 
   return (
     <div
-      className={`layout-wrapper layout__topbar-fixed3 layout__bottombar-mobile-active ${
-        actve ? "layout__sidebar-mini-active" : ""
-      }   layout__sidebar-default-active3 `}
-
-      // className={`layout-wrapper layout__topbar-fixed3 layout__sidebar-overlay3 layout__sidebar-static3 layout__notification-bar-active3 layout__bottombar-active3 layout__modal-active3 layout__bottombar-active3 ${
+      // className={`layout-wrapper layout__topbar-fixed3 layout__bottombar-mobile-active ${
       //   actve ? "layout__sidebar-mini-active" : ""
-      // } layout__sidebar-default-active3 layout__sidebar-mini-hover-overlay-active3  layout__sidebar-mini-hover-to-default-active3   layout__sidebar-mini-active3 layout__sidebar-static3    layout__sidebar-mini-active3 layout__modal-active3  layout__bottombar-active3   `}
+      // }   layout__sidebar-default-active3 `}
+
+      className={`layout-wrapper layout__topbar-hidden3 layout__bottombar-hover-width-and-hight-active  layout__bottombar-hover-width-active3 layout__bottombar-mobile-active layout__topbar-fixed layout__sidebar-overlay3 layout__sidebar-static layout__notification-bar-active3  layout__modal-active3 ${
+        actve
+          ? "layout__sidebar-mini-hover-to-default-active layout__sidebar-right-mini-hover-to-default-active "
+          : ""
+      } layout__sidebar-mini-active3 layout__sidebar-default-active3 layout__sidebar-mini-hover-overlay-active3  layout__sidebar-mini-hover-to-default-active3   layout__sidebar-mini-active3 layout__sidebar-static3    layout__sidebar-mini-active3 layout__modal-active3  layout__bottombar-active   `}
     >
       <aside ref={leftSidebarRef} className="layout__sidebar">
         <div className="layout__sidebar-content">
@@ -183,14 +185,13 @@ function Layout({ children }) {
             </div>
           </div>
           <nav ref={topbarRef} className="layout__nav">
-            Navbar
+            <AppTopbar />
           </nav>
         </header>
         <div className="layout__content">
           <div className="layout__content-inner">
             {children}
 
-            <AppFooter />
             <button
               onClick={() => {
                 setActive(!actve);
@@ -200,10 +201,12 @@ function Layout({ children }) {
               checking button checking button checking button
             </button>
           </div>
+          <AppFooter />
         </div>
 
         <div ref={bottomBarRef} className="layout__bottombar">
           <div className="layout__bottombar-content">bottombar</div>
+          <div className="layout__bottombar-mobile-content">bottombar2</div>
         </div>
       </main>
 

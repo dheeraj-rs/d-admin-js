@@ -7,4 +7,10 @@
   margin-top: $layout-padding-default;
   background-color: var(--surface-background);
   transition: margin-left $transition-duration-default;
+
+  position: absolute;
+  bottom: 0;
+  left: $layout-padding-default;
+  right: $layout-padding-default;
+  border-radius: 0 0 $border-radius-default;
 }
