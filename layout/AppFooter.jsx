@@ -1,6 +1,6 @@
 import React from "react";
 
-function AppFooter({ className }) {
+function AppFooter() {
   return (
     <div className="layout__footer">
       <div className="">AppFooter</div>

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useContext, useEffect } from "react";
 import { CSSTransition } from "react-transition-group";
 import { LayoutContext } from "./context/layoutcontext";
+import { LayoutSettings } from "./utils";
 
 const MenuModeRadioGroup = ({ selectedMode, onChange }) => {
   const navbarOptions = [
@@ -21,104 +22,72 @@ const MenuModeRadioGroup = ({ selectedMode, onChange }) => {
 
   return (
     <div className="menu-mode-radio-group">
-      <div className="mode-selection2">
+      <div className="menu-mode-radio-group__mode-selection">
         {modes.map((mode) => (
-          <label key={mode.value} className="radio-option2">
+          <label
+            key={mode.value}
+            className="menu-mode-radio-group__radio-option"
+          >
             <input
               type="radio"
               name="menuMode"
               value={mode.value}
               checked={selectedMode === mode.value}
-              onChange={(e) => onChange(e.target.value, mode.value)}
+              onChange={(e) => onChange(e.target.value)}
             />
-            <p className="radio-label">{mode.label}</p>
+            <span className="menu-mode-radio-group__radio-option-label">
+              {mode.label}
+            </span>
           </label>
         ))}
       </div>
 
-      {selectedMode === "navbar"}
-
-      {selectedMode === "navbar" && (
-        <div className="navbar-options">
-          {navbarOptions.map((option) => (
-            <label key={option.value} className="radio-option2">
+      <div className="menu-mode-radio-group__options">
+        {selectedMode === "navbar" &&
+          navbarOptions.map((option) => (
+            <label
+              key={option.value}
+              className="menu-mode-radio-group__radio-option"
+            >
               <input
                 type="radio"
                 name="navbarOptions"
                 value={option.value}
-                onChange={() => onChange(option.value, selectedMode)}
+                onChange={() => onChange(option.value)}
               />
-              <p className="radio-label2">{option.label}</p>
+              <span className="menu-mode-radio-group__radio-option-label">
+                {option.label}
+              </span>
             </label>
           ))}
-        </div>
-      )}
 
-      {selectedMode === "sidebar" && (
-        <div className="sidebar-options">
-          {sidebarOptions.map((option) => (
-            <label key={option.value} className="radio-option2">
+        {selectedMode === "sidebar" &&
+          sidebarOptions.map((option) => (
+            <label
+              key={option.value}
+              className="menu-mode-radio-group__radio-option"
+            >
               <input
                 type="radio"
                 name="sidebarOptions"
                 value={option.value}
-                onChange={() => onChange(option.value, selectedMode)}
+                onChange={() => onChange(option.value)}
               />
-              <p className="radio-label2">{option.label}</p>
+              <span className="menu-mode-radio-group__radio-option-label">
+                {option.label}
+              </span>
             </label>
           ))}
-        </div>
-      )}
+      </div>
     </div>
   );
 };
 
 const ConfigMenuItem = ({ children, onClick }) => {
   return (
-    <li className="config-menu-item" onClick={onClick}>
+    <li className="config-menu__item" onClick={onClick}>
       {children}
     </li>
-  );
-};
-
-const ScaleControl = ({ scale, onIncrease, onDecrease, scales }) => {
-  return (
-    <div className="scale-control">
-      <button
-        className="scale-btn decrease"
-        onClick={onDecrease}
-        disabled={scale === scales[0]}
-      >
-        <i className="pi pi-minus"></i>
-      </button>
-      <div className="scale-indicators">
-        {scales.map((s) => (
-          <div
-            key={s}
-            className={`scale-indicator ${s === scale ? "active" : ""}`}
-          />
-        ))}
-      </div>
-      <button
-        className="scale-btn increase"
-        onClick={onIncrease}
-        disabled={scale === scales[scales.length - 1]}
-      >
-        <i className="pi pi-plus"></i>
-      </button>
-    </div>
-  );
-};
-
-const ThemeButton = ({ theme, label, isActive, onClick }) => {
-  return (
-    <button
-      className={`theme-button ${theme} ${isActive ? "active" : ""}`}
-      onClick={onClick}
-    >
-      <div className="theme-icon"></div>
-      <p>{label}</p>
-    </button>
   );
 };
 
@@ -127,75 +96,18 @@ const AppConfigbox = () => {
   const [activeMenu, setActiveMenu] = useState("main");
   const [menuHeight, setMenuHeight] = useState(null);
   const dropdownRef = useRef(null);
-  const [scales] = useState([12, 13, 14, 15, 16]);
 
   const setMenuHeightBasedOnElement = (el) => {
     const height = el.offsetHeight;
     setMenuHeight(height);
   };
 
-  const updateMenuMode = (value, type) => {
-    console.log("value :", value);
-    console.log("type :", type);
+  const updateMenuMode = (value) => {
     setLayoutConfig((prevState) => ({
       ...prevState,
       menuMode: value,
     }));
   };
-
-  const adjustScale = (increment) => {
-    setLayoutConfig((prevState) => ({
-      ...prevState,
-      scale: prevState.scale + increment,
-    }));
-  };
-
-  const changeTheme = (theme, colorScheme) => {
-    const themeLink = document.getElementById("theme-css");
-    const newHref = `/themes/${theme}/theme.css`;
-    replaceLink(themeLink, newHref);
-    setLayoutConfig((prevState) => ({ ...prevState, theme, colorScheme }));
-  };
-
-  const isIE = () => {
-    return /(MSIE|Trident\/|Edge\/)/i.test(window.navigator.userAgent);
-  };
-
-  const replaceLink = (linkElement, href, callback) => {
-    if (isIE()) {
-      linkElement.setAttribute("href", href);
-      if (callback) {
-        callback();
-      }
-    } else {
-      const id = linkElement.getAttribute("id");
-      const cloneLinkElement = linkElement.cloneNode(true);
-      cloneLinkElement.setAttribute("href", href);
-      cloneLinkElement.setAttribute("id", id + "-clone");
-      linkElement.parentNode.insertBefore(
-        cloneLinkElement,
-        linkElement.nextSibling
-      );
-      cloneLinkElement.addEventListener("load", () => {
-        linkElement.remove();
-        cloneLinkElement.setAttribute("id", id);
-        if (callback) {
-          callback();
-        }
-      });
-    }
-  };
-
-  useEffect(() => {
-    document.documentElement.style.fontSize = layoutConfig.scale + "px";
-  }, [layoutConfig.scale]);
-
-  const themes = [
-    { theme: "lara-light-indigo", label: "Light Indigo", scheme: "light" },
-    { theme: "lara-dark-indigo", label: "Dark Indigo", scheme: "dark" },
-    { theme: "lara-light-teal", label: "Light Teal", scheme: "light" },
-    { theme: "lara-dark-teal", label: "Dark Teal", scheme: "dark" },
-  ];
 
   const menuItems = [
     {
@@ -237,34 +149,28 @@ const AppConfigbox = () => {
           label: "Scale",
           type: "section",
         },
-        {
-          component: (
-            <ScaleControl
-              scale={layoutConfig.scale}
-              scales={scales}
-              onIncrease={() => adjustScale(1)}
-              onDecrease={() => adjustScale(-1)}
-            />
-          ),
-        },
+        // {
+        //   component: <LayoutSettings />,
+        // },
         {
           label: "Theme",
           type: "section",
         },
+        // {
+        //   component: <LayoutSettings />,
+        // },
+      ],
+    },
+    {
+      key: "settings",
+      items: [
         {
-          component: (
-            <div className="theme-buttons">
-              {themes.map(({ theme, label, scheme }) => (
-                <ThemeButton
-                  key={theme}
-                  theme={theme}
-                  label={label}
-                  isActive={layoutConfig.theme === theme}
-                  onClick={() => changeTheme(theme, scheme)}
-                />
-              ))}
-            </div>
-          ),
+          label: "Back",
+          icon: "arrow-left",
+          onClick: () => setActiveMenu("main"),
+        },
+        {
+          component: <LayoutSettings />,
         },
       ],
     },
@@ -272,10 +178,10 @@ const AppConfigbox = () => {
 
   return (
     <div className="config-box" ref={dropdownRef}>
-      <div className="config-box-header">
+      <div className="config-box__header">
         <h3>Configuration</h3>
       </div>
-      <div className="config-box-content" style={{ height: menuHeight }}>
+      <div className="config-box__content" style={{ height: menuHeight }}>
         <CSSTransition
           in={true}
           timeout={300}
@@ -285,20 +191,24 @@ const AppConfigbox = () => {
         >
           <ul className="config-menu">
             {menuItems
-              .find((menu) => menu.key === activeMenu)
+              ?.find((menu) => menu.key === activeMenu)
               ?.items.map((item, index) => (
                 <React.Fragment key={index}>
                   {item.type === "section" && (
-                    <li className="section-header">{item.label}</li>
+                    <li className="config-menu__section-header">
+                      {item?.label}
+                    </li>
                   )}
                   {!item.type && (
                     <ConfigMenuItem onClick={item.onClick}>
-                      {item.component || (
-                        <div className="menu-item-content">
+                      {item?.component || (
+                        <div className="config-menu__item-content">
                           {item.icon && (
                             <i className={`pi pi-${item.icon}`}></i>
                           )}
-                          <p className="config-item-label">{item.label}</p>
+                          <p className="config-menu__item-label">
+                            {item?.label}
+                          </p>
                         </div>
                       )}
                     </ConfigMenuItem>

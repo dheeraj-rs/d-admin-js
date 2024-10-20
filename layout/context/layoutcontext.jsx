@@ -15,14 +15,35 @@ export const LayoutProvider = ({ children }) => {
   });
 
   const [layoutState, setLayoutState] = useState({
-    staticMenuDesktopInactive: false,
-    staticMenuMobileActive: false,
-    overlayMenuActive: false,
-    profileSidebarVisible: false,
-    configSidebarVisible: false,
-    menuHoverActive: false,
-    modalActive: false,
+    // staticMenuDesktopInactive: false,
+    // staticMenuMobileActive: false,
+    // overlayMenuActive: false,
+    // profileSidebarVisible: false,
+    // configSidebarVisible: false,
+    // menuHoverActive: false,
+    // modalActive: false,
+
+    navbarType: "",
+    sidebarType: "overlay",
+    leftSidebarMode: "mini-hover",
+    rightSidebarMode: "mini-hover",
+    mobileLeftSidebarMode: "m-mini",
+    mobileRightSidebarMode: "m-mini",
+    mobileBottomBar: "disable",
+    bottomBar: {
+      enabled: false,
+      hoverStyle: "width",
+    },
+    notificationBar: false,
+    activeModal: false,
+    theme: "light",
+    direction: "ltr",
   });
+
+  console.log("layoutState :", layoutState);
+
+  const [mouseOverLabelName, setMouseOverLabelName] = useState("");
+  console.log("mouseOverLabelName :", mouseOverLabelName);
 
   const isDesktop = () => {
     return window.innerWidth > 991;
@@ -67,6 +88,8 @@ export const LayoutProvider = ({ children }) => {
     setLayoutState,
     onMenuToggle,
     showProfileSidebar,
+    mouseOverLabelName,
+    setMouseOverLabelName,
   };
 
   return (

@@ -1,17 +1,18 @@
 "use client";
 import Link from "next/link";
-import React, { useEffect, useContext, useRef, useState } from "react";
+import React, { useEffect, useContext } from "react";
 import { CSSTransition } from "react-transition-group";
 import { MenuContext } from "./context/menucontext";
 import { usePathname, useSearchParams } from "next/navigation";
-// import { LayoutContext } from "./context/layoutcontext";
 import { classNames, Ripple } from "@/utils";
+import { LayoutContext } from "./context/layoutcontext";
 
 const AppMenuitem = (props) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { activeMenu, setActiveMenu } = useContext(MenuContext);
-  // const { layoutConfig } = useContext(LayoutContext);
+  const { setMouseOverLabelName } = useContext(LayoutContext);
+  const { layoutState } = useContext(LayoutContext);
 
   const item = props?.item;
   const key = props?.parentKey
@@ -95,6 +96,12 @@ const AppMenuitem = (props) => {
           style={container}
           target={item?.target}
           tabIndex={0}
+          {...(layoutState?.leftSidebarMode === "mini" && {
+            "data-tooltip-id": item?.label,
+          })}
+          {...(layoutState?.leftSidebarMode === "mini" && {
+            onMouseOver: () => setMouseOverLabelName(item?.label),
+          })}
         >
           <i className={classNames("layout-menuitem-icon", item?.icon)}></i>
           <span className="layout-menuitem-text">{item?.label}</span>
@@ -115,6 +122,12 @@ const AppMenuitem = (props) => {
           })}
           style={container}
           tabIndex={0}
+          {...(layoutState?.leftSidebarMode === "mini" && {
+            "data-tooltip-id": item?.label,
+          })}
+          {...(layoutState?.leftSidebarMode === "mini" && {
+            onMouseOver: () => setMouseOverLabelName(item?.label),
+          })}
         >
           <i className={classNames("layout-menuitem-icon", item?.icon)}></i>
           <span className="layout-menuitem-text">{item?.label}</span>

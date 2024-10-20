@@ -1,23 +1,18 @@
 "use client";
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  createContext,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { LayoutContext } from "./context/layoutcontext";
 import { usePathname, useSearchParams } from "next/navigation";
 import { classNames } from "@/utils";
 import AppTopbar from "./AppTopbar";
 import AppSidebar from "./AppSidebar";
 import AppFooter from "./AppFooter";
-import AppConfig from "./AppConfig";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 function Layout({ children }) {
-  const [actve, setActive] = useState(false);
-  const { layoutConfig, layoutState, setLayoutState } =
+  const { layoutState, setLayoutState, mouseOverLabelName } =
     useContext(LayoutContext);
+
   const topbarRef = useRef(null);
   const leftSidebarRef = useRef(null);
   const rightSidebarRef = useRef(null);
@@ -142,37 +137,68 @@ function Layout({ children }) {
     };
   }, [layoutState.profileSidebarVisible]);
 
-  console.log("->", layoutState?.configSidebarVisible);
+  const containerClass = classNames("layout-wrapper", {
+    // "toggle-modal": layoutState?.modalActive,
+    // "toggle-config": layoutState?.configSidebarVisible,
+    // "toggle-sidebar": layoutState?.staticMenuDesktopInactive,
+    // "overlay-topbar": layoutConfig.navbarMode === "overlay",
+    // "overlay-layout": layoutConfig.menuMode === "overlay",
+    // "static-sidebar": layoutConfig.menuMode === "static",
 
-  // const containerClass = classNames("layout-wrapper", {
-  //   "toggle-modal": layoutState?.modalActive,
-  //   "toggle-config": layoutState?.configSidebarVisible,
-  //   "toggle-sidebar": layoutState?.staticMenuDesktopInactive,
-  //   "overlay-topbar": layoutConfig.navbarMode === "overlay",
-  //   "overlay-layout": layoutConfig.menuMode === "overlay",
-  //   "static-sidebar": layoutConfig.menuMode === "static",
-  // });
+    "layout__topbar-fixed": layoutState?.navbarType === "fixed",
+    "layout__topbar-hidden": layoutState?.navbarType === "hidden",
+    "layout__sidebar-overlay": layoutState?.sidebarType === "overlay",
+    "layout__sidebar-static": layoutState?.sidebarType === "fixed",
+    "layout__sidebar-mini-hover-overlay-active":
+      layoutState?.leftSidebarMode === "mini-hover",
+    "layout__sidebar-mini-active": layoutState?.leftSidebarMode === "mini",
+    "layout__sidebar-mini-hover-to-default-active":
+      layoutState?.leftSidebarMode === "mini-hover-default",
+    "layout__sidebar-default-active":
+      layoutState?.leftSidebarMode === "default",
+    "layout__sidebar-right-mini-hover-overlay-active":
+      layoutState?.rightSidebarMode === "mini-hover",
+    "layout__sidebar-right-mini-active":
+      layoutState?.rightSidebarMode === "mini",
+    "layout__sidebar-right-mini-hover-to-default-active":
+      layoutState?.rightSidebarMode === "mini-hover-default",
+    "layout__sidebar-right-default-active":
+      layoutState?.rightSidebarMode === "default",
+    "layout__sidebar-mobile-mini-active":
+      layoutState?.mobileLeftSidebarMode === "m-mini",
+    "layout__sidebar-mobile-default-active":
+      layoutState?.mobileLeftSidebarMode === "m-default",
+    "layout__sidebar-mobile-mini-active":
+      layoutState?.mobileRightSidebarMode === "m-mini",
+    "layout__sidebar-mobile-default-active":
+      layoutState?.mobileRightSidebarMode === "m-default",
+    "layout__bottombar-mobile-active": layoutState?.mobileBottomBar,
+    "layout__bottombar-active": layoutState?.bottomBar.enabled,
+    "layout__bottombar-hover-width-active":
+      layoutState?.bottomBar.hoverStyle === "width" &&
+      layoutState?.bottomBar.enabled,
+    "layout__bottombar-hover-width-and-hight-active":
+      layoutState?.bottomBar.hoverStyle === "both" &&
+      layoutState?.bottomBar.enabled,
+    "layout__notification-bar-active": layoutState?.notificationBar,
+    "layout__modal-active": layoutState?.activeModal,
+  });
 
   const notificationText = `You are being redirected to the authorized application. If your browser does not redirect you back, please visit this setup page to continue. You are being redirected to the authorized application. If your browser does not redirect you back, please visit this setup page to continue.`;
 
   return (
-    <div
-      // className={`layout-wrapper layout__topbar-fixed3 layout__bottombar-mobile-active ${
-      //   actve ? "layout__sidebar-mini-active" : ""
-      // }   layout__sidebar-default-active3 `}
-
-      className={`layout-wrapper layout__topbar-hidden3 layout__bottombar-hover-width-and-hight-active  layout__bottombar-hover-width-active3 layout__bottombar-mobile-active layout__topbar-fixed layout__sidebar-overlay3 layout__sidebar-static layout__notification-bar-active3  layout__modal-active3 ${
-        actve
-          ? "layout__sidebar-mini-hover-to-default-active layout__sidebar-right-mini-hover-to-default-active "
-          : ""
-      } layout__sidebar-mini-active3 layout__sidebar-default-active3 layout__sidebar-mini-hover-overlay-active3  layout__sidebar-mini-hover-to-default-active3   layout__sidebar-mini-active3 layout__sidebar-static3    layout__sidebar-mini-active3 layout__modal-active3  layout__bottombar-active   `}
-    >
+    <div className={`layout-wrapper ${containerClass}`}>
       <aside ref={leftSidebarRef} className="layout__sidebar">
         <div className="layout__sidebar-content">
           <AppSidebar />
         </div>
       </aside>
-
+      <Tooltip
+        id={mouseOverLabelName}
+        content={mouseOverLabelName}
+        place="right"
+        style={{ marginLeft: "1rem", zIndex: 9999 }}
+      />
       <aside ref={rightSidebarRef} className="layout__sidebar-right">
         <div className="layout__sidebar-right-content"></div>
       </aside>
@@ -189,18 +215,7 @@ function Layout({ children }) {
           </nav>
         </header>
         <div className="layout__content">
-          <div className="layout__content-inner">
-            {children}
-
-            <button
-              onClick={() => {
-                setActive(!actve);
-              }}
-            >
-              checking button checking button checking button checking button
-              checking button checking button checking button
-            </button>
-          </div>
+          <div className="layout__content-inner">{children}</div>
           <AppFooter />
         </div>
 

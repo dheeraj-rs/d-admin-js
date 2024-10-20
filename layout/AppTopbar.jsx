@@ -1,5 +1,4 @@
 /* eslint-disable react/no-children-prop */
-import Link from "next/link";
 import React, {
   forwardRef,
   useContext,
@@ -10,7 +9,6 @@ import React, {
 import { LayoutContext } from "./context/layoutcontext";
 import { classNames, Dropdown } from "@/utils";
 import { menuitem } from "@/public/layout/data";
-import AppConfig from "./AppConfig";
 import AppConfigbox from "./AppConfigbox";
 
 const NavbarItem = ({ item }) => {
@@ -139,16 +137,11 @@ const AppTopbar = forwardRef((props, ref) => {
           <span>Profile</span>
         </button>
 
-        {/* <button type="button" className="p-link layout-topbar-button">
-          <i className="pi pi-cog"></i>
-          <span>Settings</span>
-        </button> */}
-
-        {/* <Dropdown
+        <Dropdown
           button={<i className="pi pi-cog"></i>}
           className="p-link layout-topbar-button "
           children={<AppConfigbox />}
-        /> */}
+        />
       </div>
 
       <Dropdown

@@ -1,196 +1,21 @@
-.layout__sidebar-right {
-  background-color: var(--surface-overlay);
-  width: $sidebar-width-mini;
-  height: calc(100vh - (2 * $layout-padding-default));
-  position: fixed;
-  top: $layout-padding-default;
-  right: $layout-padding-default;
-  border-radius: $border-radius-default;
-  box-shadow: $box-shadow-default;
-  z-index: 998;
-
-  transform: translateX(100%);
-  right: 0;
-
-  transition: transform $transition-duration-default $transition-easing-default,
-    right $transition-duration-default $transition-easing-default,
-    width $transition-duration-default $transition-easing-default;
-  padding-bottom: $layout-sidebar-padding-bottom + $layout-padding-default;
-
-  //   ~ .layout__main {
-  //     margin-right: calc($sidebar-width-mini + #{$layout-padding-default});
-  //   }
-}
-
-// .layout__bottombar {
-//   display: none;
-// }
-
-.layout__modal {
-  background-color: var(--surface-overlay);
-  width: calc(100% - 2 * $layout-padding-default);
-  height: calc(100vh - (2 * $layout-padding-default));
-  position: fixed;
-  border-radius: $border-radius-default;
-  box-shadow: $box-shadow-default;
-  z-index: 999;
-  transform: translateX(100%);
-
-  transition: transform $transition-duration-modal $transition-easing-default,
-    right $transition-duration-modal $transition-easing-default,
-    width $transition-duration-modal $transition-easing-default;
-}
-
-.layout__modal-active {
-  .layout__modal {
-    transform: translateX(0);
-    top: $layout-padding-default;
-    right: $layout-padding-default;
-  }
-}
-
-.layout__bottombar {
-  .layout__bottombar-content {
-    transform: translateX(100%);
-    position: fixed;
-    right: 0;
-    bottom: $layout-padding-default;
-    flex: 1 1 auto;
-    background-color: var(--surface-ground);
-    margin-left: $layout-padding-default;
-    width: $layout-bottombar-width;
-    height: $layout-bottombar-hight;
-    box-sizing: border-box;
-    border-radius: $border-radius-default;
-    box-shadow: $box-shadow-default;
-    z-index: 9999;
-    transition: transform $transition-duration-default
-        $transition-easing-default,
-      right $transition-duration-default $transition-easing-default,
-      left $transition-duration-default $transition-easing-default,
-      width $transition-duration-default $transition-easing-default,
-      height $transition-duration-default $transition-easing-default
-        $transition-duration-default;
-
-    // &:hover {
-    //   width: auto;
-    // }
-    &:not(:hover) {
-      width: $sidebar-width-mini;
-      height: $sidebar-width-mini;
-      transition: transform $transition-duration-default
-          $transition-easing-default,
-        right $transition-duration-default $transition-easing-default,
-        left $transition-duration-default $transition-easing-default,
-        height $transition-duration-default $transition-easing-default,
-        width $transition-duration-default $transition-easing-default
-          $transition-duration-default;
-    }
-  }
-  .layout__bottombar-mobile-content {
-    transform: translateX(100%);
-    position: fixed;
-    bottom: $layout-padding-default;
-    right: 0;
-    flex: 1 1 auto;
-    height: $layout-bottombar-mobile-hight;
-    background-color: var(--surface-ground);
-    width: calc(100% - 2 * $layout-padding-default);
-    border-radius: $border-radius-default;
-    box-shadow: $box-shadow-default;
-    z-index: 9999;
-  }
-}
-// =====
-
-// Main sidebar styles
-.layout-sidebar2 {
+.layout__sidebar {
   background-color: var(--surface-overlay);
   width: $sidebar-width-mini;
   height: calc(100vh - 2 * $layout-padding-default);
   position: fixed;
   top: $layout-padding-default;
-  right: $layout-padding-default;
   border-radius: $border-radius-default;
   box-shadow: $box-shadow-default;
-  // overflow-y: auto;
-  // user-select: none;
-  z-index: 999;
+  z-index: 998;
+  transform: translateX(-100%);
+  left: 0;
+  overflow: hidden;
   transition: transform $transition-duration-default $transition-easing-default,
-    right $transition-duration-default $transition-easing-default,
-    width $transition-duration-default $transition-easing-default;
+    left $transition-duration-default $transition-easing-default,
+    width $transition-duration-default $transition-easing-default,
+    height $transition-duration-default $transition-easing-default;
   padding-bottom: $layout-sidebar-padding-bottom + $layout-padding-default;
 
-  &:hover {
-    width: $sidebar-width-default;
-
-    ~ .layout-main-container {
-      margin-right: calc($sidebar-width-default + #{$layout-padding-default});
-    }
-
-    ~ .layout-topbar {
-      margin-right: calc($sidebar-width-default + #{$layout-padding-default});
-      width: calc(
-        100% -
-          (
-            $sidebar-width-default + #{4 * $layout-padding-default +
-              $sidebar-width-mini}
-          )
-      );
-    }
-
-    // Apply the width change when `.toggle-config` is present on the sidebar
-    .toggle-config & {
-      ~ .layout-topbar {
-        width: calc(
-          100% -
-            (
-              #{$sidebar-width-default} + #{$sidebar-width-mini} + #{4 *
-                $layout-padding-default}
-            )
-        );
-      }
-    }
-    .toggle-config & {
-      ~ .layout-topbar {
-        width: calc(
-          100% -
-            (
-              #{$sidebar-width-default} + #{$sidebar-width-mini} + #{4 *
-                $layout-padding-default}
-            )
-        );
-      }
-    }
-
-    .layout-menuitem-text,
-    .layout-submenu-toggler {
-      display: block;
-      animation: slideInText 0.3s ease-out forwards;
-    }
-
-    .sidebar-menu ul ul li a {
-      margin-left: 1rem;
-      animation: slideInText 0.3s ease-out forwards;
-    }
-
-    // ~ .layout-config {
-    //   .layout-topbar {
-    //     margin-left: var(2 * $sidebar-width-default);
-    //     width: calc(
-    //       100% -
-    //         (
-    //           #{$sidebar-width-default} + #{$sidebar-width-mini} + #{4 *
-    //             $layout-padding-default}
-    //         )
-    //     );
-    //   }
-    // }
-
-    animation: none;
-  }
-
-  // When not hovered
   &:not(:hover) {
     .layout-menuitem-text,
     .layout-submenu-toggler {
@@ -203,46 +28,16 @@
     .sidebar-menu ul ul li a {
       margin-left: 0;
     }
+
+    .sidebar-menu-container .sidebar-menu ul ul li a {
+      margin-left: 0;
+    }
   }
 
-  // @media (max-width: 768px) {
-  //   .layout-menuitem-text,
-  //   .layout-submenu-toggler {
-  //     display: none;
-  //     opacity: 0;
-  //     transform: translateX(-20px);
-  //     animation: slideOutText 0.3s ease-out forwards;
-  //   }
-
-  //   .sidebar-menu ul ul li a {
-  //     margin-left: 0;
-  //   }
-  // }
-}
-
-.layout__sidebar {
-  background-color: var(--surface-overlay);
-  width: $sidebar-width-mini;
-  height: calc(100vh - 2 * $layout-padding-default);
-  position: fixed;
-  top: $layout-padding-default;
-  border-radius: $border-radius-default;
-  box-shadow: $box-shadow-default;
-  z-index: 998;
-  transform: translateX(-100%);
-  left: 0;
-
-  overflow: hidden;
-
-  transition: transform $transition-duration-default $transition-easing-default,
-    left $transition-duration-default $transition-easing-default,
-    width $transition-duration-default $transition-easing-default,
-    height $transition-duration-default $transition-easing-default;
-  padding-bottom: $layout-sidebar-padding-bottom + $layout-padding-default;
+  animation: none;
 
   .sidebar-menu-container {
     height: calc(100vh - 2 * $layout-padding-default);
-    // position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -261,7 +56,6 @@
       height: $layout-sidebar-padding-bottom;
 
       .layout-root-menuitem {
-        // background-color: #646ed390;
         > .layout-menuitem-root-text {
           font-size: 0.857rem;
           text-transform: uppercase;
@@ -379,7 +173,8 @@
     }
 
     .searchbar-container {
-      background-color: var(--surface-overlay);
+      // background-color: var(--surface-overlay);
+
       height: 3rem;
       position: absolute;
       padding: 0 0 0.5rem;
@@ -410,7 +205,7 @@
         // box-shadow: $box-shadow-default;
         border-radius: $border-radius-default;
         cursor: pointer;
-        // background-color: var(--surface-overlay);
+        background-color: var(--surface-overlay);
         // box-shadow: $box-shadow-default;
 
         border-color: transparent;
@@ -515,4 +310,97 @@
     transition: max-height 0.45s cubic-bezier(0, 1, 0, 1);
   }
 }
-// searchbar styles
+
+.layout__sidebar-right {
+  background-color: var(--surface-overlay);
+  width: $sidebar-width-mini;
+  height: calc(100vh - (2 * $layout-padding-default));
+  position: fixed;
+  top: $layout-padding-default;
+  right: $layout-padding-default;
+  border-radius: $border-radius-default;
+  box-shadow: $box-shadow-default;
+  z-index: 998;
+
+  transform: translateX(100%);
+  right: 0;
+
+  transition: transform $transition-duration-default $transition-easing-default,
+    right $transition-duration-default $transition-easing-default,
+    width $transition-duration-default $transition-easing-default;
+  padding-bottom: $layout-sidebar-padding-bottom + $layout-padding-default;
+}
+
+.layout__bottombar {
+  .layout__bottombar-content {
+    transform: translateX(100%);
+    position: fixed;
+    right: 0;
+    bottom: $layout-padding-default;
+    flex: 1 1 auto;
+    background-color: var(--surface-overlay);
+    margin-left: $layout-padding-default;
+    width: $layout-bottombar-width;
+    height: $layout-bottombar-hight;
+    box-sizing: border-box;
+    border-radius: $border-radius-default;
+    box-shadow: $box-shadow-default;
+    z-index: 9999;
+    transition: transform $transition-duration-default
+        $transition-easing-default,
+      right $transition-duration-default $transition-easing-default,
+      left $transition-duration-default $transition-easing-default,
+      width $transition-duration-default $transition-easing-default,
+      height $transition-duration-default $transition-easing-default
+        $transition-duration-default;
+
+    &:not(:hover) {
+      width: $sidebar-width-mini;
+      height: $sidebar-width-mini;
+      transition: transform $transition-duration-default
+          $transition-easing-default,
+        right $transition-duration-default $transition-easing-default,
+        left $transition-duration-default $transition-easing-default,
+        height $transition-duration-default $transition-easing-default,
+        width $transition-duration-default $transition-easing-default
+          $transition-duration-default;
+    }
+  }
+
+  .layout__bottombar-mobile-content {
+    transform: translateX(100%);
+    position: fixed;
+    bottom: $layout-padding-default;
+    right: 0;
+    flex: 1 1 auto;
+    height: $layout-bottombar-mobile-hight;
+    background-color: var(--surface-overlay);
+    width: calc(100% - 2 * $layout-padding-default);
+    border-radius: $border-radius-default;
+    box-shadow: $box-shadow-default;
+    z-index: 9999;
+  }
+}
+
+.layout__modal {
+  background-color: var(--surface-overlay);
+  width: calc(100% - 2 * $layout-padding-default);
+  height: calc(100vh - (2 * $layout-padding-default));
+  position: fixed;
+  border-radius: $border-radius-default;
+  box-shadow: $box-shadow-default;
+  z-index: 999;
+  transform: translateX(100%);
+
+  transition: transform $transition-duration-modal $transition-easing-default,
+    right $transition-duration-modal $transition-easing-default,
+    width $transition-duration-modal $transition-easing-default;
+}
+
+.layout__modal-active {
+  .layout__modal {
+    transform: translateX(0);
+    top: $layout-padding-default;
+    right: $layout-padding-default;
+  }
+}
