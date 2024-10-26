@@ -51,13 +51,8 @@ const NavbarItem = ({ item }) => {
 };
 
 const AppTopbar = forwardRef((props, ref) => {
-  const {
-    layoutConfig,
-    layoutState,
-    onMenuToggle,
-    setLayoutState,
-    showProfileSidebar,
-  } = useContext(LayoutContext);
+  const { layoutConfig, onMenuToggle, setLayoutConfig, showProfileSidebar } =
+    useContext(LayoutContext);
   const [toggle, setToggle] = useState(false);
 
   const menubuttonRef = useRef(null);
@@ -71,7 +66,7 @@ const AppTopbar = forwardRef((props, ref) => {
   }));
 
   const ToggleConfigBtn = () => {
-    setLayoutState((prevLayoutState) => ({
+    setLayoutConfig((prevLayoutState) => ({
       ...prevLayoutState,
       configSidebarVisible: !prevLayoutState.configSidebarVisible,
     }));
@@ -102,7 +97,7 @@ const AppTopbar = forwardRef((props, ref) => {
         ref={menubuttonRef}
         type="button"
         className="p-link layout-menu-button layout-topbar-button"
-        onClick={onMenuToggle}
+        onClick={() => onMenuToggle("left")}
       >
         <i className="pi pi-bars" />
       </button>
@@ -125,9 +120,19 @@ const AppTopbar = forwardRef((props, ref) => {
       <div
         ref={topbarmenuRef}
         className={classNames("layout-topbar-menu", {
-          "layout-topbar-menu-mobile-active": layoutState.profileSidebarVisible,
+          "layout-topbar-menu-mobile-active":
+            layoutConfig.profileSidebarVisible,
         })}
       >
+        {" "}
+        <button
+          ref={menubuttonRef}
+          type="button"
+          className="p-link layout-menu-button layout-topbar-button"
+          onClick={() => onMenuToggle("right")}
+        >
+          <i className="pi pi-bars" />
+        </button>
         <button
           type="button"
           className="p-link layout-topbar-button"
@@ -136,7 +141,6 @@ const AppTopbar = forwardRef((props, ref) => {
           <i className="pi pi-user"></i>
           <span>Profile</span>
         </button>
-
         <Dropdown
           button={<i className="pi pi-cog"></i>}
           className="p-link layout-topbar-button "
@@ -144,11 +148,11 @@ const AppTopbar = forwardRef((props, ref) => {
         />
       </div>
 
-      <Dropdown
+      {/* <Dropdown
         button={<i className="pi pi-ellipsis-v" />}
         className="p-link layout-topbar-menu-button"
         children={<AppConfigbox />}
-      />
+      /> */}
     </div>
   );
 });

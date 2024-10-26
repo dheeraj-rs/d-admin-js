@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { LayoutContext } from "./context/layoutcontext";
 import { usePathname, useSearchParams } from "next/navigation";
 import { classNames } from "@/utils";
@@ -8,6 +8,7 @@ import AppSidebar from "./AppSidebar";
 import AppFooter from "./AppFooter";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
+import { LayoutSearchbar } from "./utils";
 
 function Layout({ children }) {
   const { layoutState, setLayoutState, mouseOverLabelName } =
@@ -17,83 +18,78 @@ function Layout({ children }) {
   const leftSidebarRef = useRef(null);
   const rightSidebarRef = useRef(null);
   const bottomBarRef = useRef(null);
+  const searchbarRef = useRef(null);
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const useEventListener = ({ type, listener }) => {
-    const listenerRef = useRef(listener);
-
-    useEffect(() => {
-      listenerRef.current = listener;
-    }, [listener]);
-
-    const bindEventListener = () => {
-      window.addEventListener(type, listenerRef.current);
-    };
-
-    const unbindEventListener = () => {
-      window.removeEventListener(type, listenerRef.current);
-    };
-
-    useEffect(() => {
-      return () => {
-        unbindEventListener();
-      };
-    }, []);
-
-    return [bindEventListener, unbindEventListener];
-  };
-
-  const [bindMenuOutsideClickListener, unbindMenuOutsideClickListener] =
-    useEventListener({
-      type: "click",
-      listener: (event) => {
-        const isOutsideClicked = !(
-          sidebarRef.current?.isSameNode(event.target) ||
-          sidebarRef.current?.contains(event.target) ||
-          topbarRef.current?.menubutton?.isSameNode(event.target) ||
-          topbarRef.current?.menubutton?.contains(event.target)
-        );
-
-        if (isOutsideClicked) {
-          hideMenu();
-        }
-      },
-    });
-
-  const [
-    bindProfileMenuOutsideClickListener,
-    unbindProfileMenuOutsideClickListener,
-  ] = useEventListener({
-    type: "click",
-    listener: (event) => {
-      const isOutsideClicked = !(
-        topbarRef.current?.topbarmenu?.isSameNode(event.target) ||
-        topbarRef.current?.topbarmenu?.contains(event.target) ||
-        topbarRef.current?.topbarmenubutton?.isSameNode(event.target) ||
-        topbarRef.current?.topbarmenubutton?.contains(event.target)
-      );
-
-      if (isOutsideClicked) {
-        hideProfileMenu();
-      }
-    },
-  });
-
+  // Handle outside clicks for both sidebars
   useEffect(() => {
-    hideMenu();
-    hideProfileMenu();
-  }, [pathname, searchParams]);
+    function handleClickOutside(event) {
+      // Check if in mobile mode or overlay type
+      const shouldHandleOutsideClick =
+        window.innerWidth < 991 || !layoutState.sidebarMode;
+
+      // Check if the click is on the searchbar or its children
+      const isSearchbarClick = searchbarRef.current?.contains(event.target);
+
+      if (shouldHandleOutsideClick && !isSearchbarClick) {
+        // Check if click is outside left sidebar
+        if (
+          leftSidebarRef.current &&
+          !leftSidebarRef.current.contains(event.target) &&
+          layoutState.toggleSidebarLeft
+        ) {
+          setLayoutState((prev) => ({
+            ...prev,
+            toggleSidebarLeft: false,
+          }));
+        }
+
+        // Check if click is outside right sidebar
+        if (
+          rightSidebarRef.current &&
+          !rightSidebarRef.current.contains(event.target) &&
+          layoutState.toggleSidebarRight
+        ) {
+          setLayoutState((prev) => ({
+            ...prev,
+            toggleSidebarRight: false,
+          }));
+        }
+      }
+    }
+
+    // Add event listener if either sidebar is open and (in mobile mode or overlay type)
+    if (
+      (window.innerWidth < 991 || !layoutState.sidebarMode) &&
+      (layoutState.toggleSidebarLeft || layoutState.toggleSidebarRight)
+    ) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    // Cleanup function
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [
+    layoutState.toggleSidebarLeft,
+    layoutState.toggleSidebarRight,
+    layoutState.sidebarMode,
+    layoutState.mobileActive,
+    setLayoutState,
+  ]);
 
   const hideMenu = () => {
-    setLayoutState((prevLayoutState) => ({
-      ...prevLayoutState,
-      overlayMenuActive: false,
-      staticMenuMobileActive: false,
-      menuHoverActive: false,
-    }));
-    unbindMenuOutsideClickListener();
-    unblockBodyScroll();
+    // Hide menu if in mobile mode or overlay type
+    if (window.innerWidth < 991 || !layoutState.sidebarMode) {
+      setLayoutState((prevLayoutState) => ({
+        ...prevLayoutState,
+        toggleSidebarLeft: false,
+        toggleSidebarRight: false,
+        menuHoverActive: false,
+      }));
+      unblockBodyScroll();
+    }
   };
 
   const hideProfileMenu = () => {
@@ -101,7 +97,6 @@ function Layout({ children }) {
       ...prevLayoutState,
       profileSidebarVisible: false,
     }));
-    unbindProfileMenuOutsideClickListener();
   };
 
   const blockBodyScroll = () => {
@@ -112,93 +107,103 @@ function Layout({ children }) {
     document.body.classList.remove("blocked-scroll");
   };
 
+  // Handle route changes
   useEffect(() => {
-    if (layoutState.overlayMenuActive || layoutState.staticMenuMobileActive) {
-      bindMenuOutsideClickListener();
+    if (layoutState.mobileActive || !layoutState.sidebarMode) {
+      hideMenu();
     }
+    hideProfileMenu();
+  }, [
+    pathname,
+    searchParams,
+    layoutState.sidebarMode,
+    layoutState.mobileActive,
+  ]);
 
-    if (layoutState.staticMenuMobileActive) {
+  // Handle body scroll
+  useEffect(() => {
+    if (layoutState.staticMenuMobileActive || layoutState.mobileActive) {
       blockBodyScroll();
     }
 
     return () => {
-      unbindMenuOutsideClickListener();
       unblockBodyScroll();
     };
-  }, [layoutState.overlayMenuActive, layoutState.staticMenuMobileActive]);
+  }, [layoutState.staticMenuMobileActive, layoutState.mobileActive]);
 
-  useEffect(() => {
-    if (layoutState.profileSidebarVisible) {
-      bindProfileMenuOutsideClickListener();
-    }
-
-    return () => {
-      unbindProfileMenuOutsideClickListener();
-    };
-  }, [layoutState.profileSidebarVisible]);
+  const {
+    toggleSidebarLeft,
+    toggleSidebarRight,
+    navbarMode,
+    sidebarMode,
+    leftSidebarMode,
+    rightSidebarMode,
+    bottomBar,
+    notificationBar,
+    modalActive,
+    hoverSearchbar,
+    mobileActive,
+  } = layoutState || {};
 
   const containerClass = classNames("layout-wrapper", {
-    // "toggle-modal": layoutState?.modalActive,
-    // "toggle-config": layoutState?.configSidebarVisible,
-    // "toggle-sidebar": layoutState?.staticMenuDesktopInactive,
-    // "overlay-topbar": layoutConfig.navbarMode === "overlay",
-    // "overlay-layout": layoutConfig.menuMode === "overlay",
-    // "static-sidebar": layoutConfig.menuMode === "static",
+    // Sidebar states
+    "toggle__sidebar-left": toggleSidebarLeft === true,
+    "toggle__sidebar-right": toggleSidebarRight === true,
+    "layout__sidebar-overlay": sidebarMode === false,
+    "layout__sidebar-static": sidebarMode === true,
 
-    "layout__topbar-fixed": layoutState?.navbarType === "fixed",
-    "layout__topbar-hidden": layoutState?.navbarType === "hidden",
-    "layout__sidebar-overlay": layoutState?.sidebarType === "overlay",
-    "layout__sidebar-static": layoutState?.sidebarType === "fixed",
-    "layout__sidebar-mini-hover-overlay-active":
-      layoutState?.leftSidebarMode === "mini-hover",
-    "layout__sidebar-mini-active": layoutState?.leftSidebarMode === "mini",
-    "layout__sidebar-mini-hover-to-default-active":
-      layoutState?.leftSidebarMode === "mini-hover-default",
-    "layout__sidebar-default-active":
-      layoutState?.leftSidebarMode === "default",
-    "layout__sidebar-right-mini-hover-overlay-active":
-      layoutState?.rightSidebarMode === "mini-hover",
-    "layout__sidebar-right-mini-active":
-      layoutState?.rightSidebarMode === "mini",
-    "layout__sidebar-right-mini-hover-to-default-active":
-      layoutState?.rightSidebarMode === "mini-hover-default",
-    "layout__sidebar-right-default-active":
-      layoutState?.rightSidebarMode === "default",
-    "layout__sidebar-mobile-mini-active":
-      layoutState?.mobileLeftSidebarMode === "m-mini",
-    "layout__sidebar-mobile-default-active":
-      layoutState?.mobileLeftSidebarMode === "m-default",
-    "layout__sidebar-mobile-mini-active":
-      layoutState?.mobileRightSidebarMode === "m-mini",
-    "layout__sidebar-mobile-default-active":
-      layoutState?.mobileRightSidebarMode === "m-default",
-    "layout__bottombar-mobile-active": layoutState?.mobileBottomBar,
-    "layout__bottombar-active": layoutState?.bottomBar.enabled,
+    // Left Sidebar modes
+    "layout__sidebar-auto-overlay-active": leftSidebarMode === "auto",
+    "layout__sidebar-mini-active": leftSidebarMode === "mini",
+    "layout__sidebar-auto-to-default-active":
+      leftSidebarMode === "auto-default",
+    "layout__sidebar-default-active": leftSidebarMode === "default",
+
+    // Right Sidebar modes
+    "layout__sidebar-right-auto-overlay-active": rightSidebarMode === "auto",
+    "layout__sidebar-right-mini-active": rightSidebarMode === "mini",
+    "layout__sidebar-right-auto-to-default-active":
+      rightSidebarMode === "auto-default",
+    "layout__sidebar-right-default-active": rightSidebarMode === "default",
+
+    // Navbar modes
+    "layout__topbar-fixed": navbarMode === true,
+    "layout__topbar-hidden": navbarMode === null,
+
+    // Bottom bar states
+    "layout__bottombar-active layout__bottombar-mobile-active":
+      bottomBar?.enabled,
     "layout__bottombar-hover-width-active":
-      layoutState?.bottomBar.hoverStyle === "width" &&
-      layoutState?.bottomBar.enabled,
+      bottomBar?.hoverStyle === "width" && bottomBar?.enabled,
     "layout__bottombar-hover-width-and-hight-active":
-      layoutState?.bottomBar.hoverStyle === "both" &&
-      layoutState?.bottomBar.enabled,
-    "layout__notification-bar-active": layoutState?.notificationBar,
-    "layout__modal-active": layoutState?.activeModal,
+      bottomBar?.hoverStyle === "both" && bottomBar?.enabled,
+
+    // Additional layout states
+    "layout__notification-bar-active": notificationBar === true,
+    "layout__modal-active": modalActive,
+    "layout__searchbar-active": hoverSearchbar,
+    "layout__mobile-active": mobileActive,
   });
 
   const notificationText = `You are being redirected to the authorized application. If your browser does not redirect you back, please visit this setup page to continue. You are being redirected to the authorized application. If your browser does not redirect you back, please visit this setup page to continue.`;
 
   return (
-    <div className={`layout-wrapper ${containerClass}`}>
+    <div className={`${containerClass} toggle__bottombar-right`}>
       <aside ref={leftSidebarRef} className="layout__sidebar">
         <div className="layout__sidebar-content">
           <AppSidebar />
         </div>
       </aside>
+
+      <LayoutSearchbar searchbarRef={searchbarRef} />
+
       <Tooltip
         id={mouseOverLabelName}
         content={mouseOverLabelName}
         place="right"
         style={{ marginLeft: "1rem", zIndex: 9999 }}
       />
+
       <aside ref={rightSidebarRef} className="layout__sidebar-right">
         <div className="layout__sidebar-right-content"></div>
       </aside>
@@ -214,6 +219,7 @@ function Layout({ children }) {
             <AppTopbar />
           </nav>
         </header>
+
         <div className="layout__content">
           <div className="layout__content-inner">{children}</div>
           <AppFooter />

@@ -96,12 +96,14 @@ const AppMenuitem = (props) => {
           style={container}
           target={item?.target}
           tabIndex={0}
-          {...(layoutState?.leftSidebarMode === "mini" && {
-            "data-tooltip-id": item?.label,
-          })}
-          {...(layoutState?.leftSidebarMode === "mini" && {
-            onMouseOver: () => setMouseOverLabelName(item?.label),
-          })}
+          {...(layoutState?.leftSidebarMode === "mini" ||
+          (layoutState?.mobileLeftSidebarMode === "m-mini" &&
+            window.innerWidth <= 991)
+            ? {
+                "data-tooltip-id": item?.label,
+                onMouseOver: () => setMouseOverLabelName(item?.label),
+              }
+            : null)}
         >
           <i className={classNames("layout-menuitem-icon", item?.icon)}></i>
           <span className="layout-menuitem-text">{item?.label}</span>
@@ -122,12 +124,14 @@ const AppMenuitem = (props) => {
           })}
           style={container}
           tabIndex={0}
-          {...(layoutState?.leftSidebarMode === "mini" && {
-            "data-tooltip-id": item?.label,
-          })}
-          {...(layoutState?.leftSidebarMode === "mini" && {
-            onMouseOver: () => setMouseOverLabelName(item?.label),
-          })}
+          {...(layoutState?.leftSidebarMode === "mini" ||
+          (layoutState?.mobileLeftSidebarMode === "m-mini" &&
+            window.innerWidth <= 991)
+            ? {
+                "data-tooltip-id": item?.label,
+                onMouseOver: () => setMouseOverLabelName(item?.label),
+              }
+            : null)}
         >
           <i className={classNames("layout-menuitem-icon", item?.icon)}></i>
           <span className="layout-menuitem-text">{item?.label}</span>

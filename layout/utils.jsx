@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { LayoutContext } from "./context/layoutcontext";
+import { menuitem } from "@/public/layout/data";
 
 export const LayoutSettings = () => {
   const { layoutConfig, setLayoutConfig, layoutState, setLayoutState } =
@@ -54,11 +55,9 @@ export const LayoutSettings = () => {
       </div>
     );
   };
-
   useEffect(() => {
     document.documentElement.style.fontSize = layoutConfig.scale + "px";
   }, [layoutConfig.scale]);
-
   const isIE = () => {
     return /(MSIE|Trident\/|Edge\/)/i.test(window.navigator.userAgent);
   };
@@ -117,6 +116,11 @@ export const LayoutSettings = () => {
       setLayoutState((prev) => ({
         ...prev,
         notificationBar: !prev.notificationBar,
+      }));
+    } else if (section === "modalActive") {
+      setLayoutState((prev) => ({
+        ...prev,
+        modalActive: !prev.modalActive,
       }));
     } else if (section === "bottomBar") {
       if (value === "enabled" || value === "mobile") {
@@ -192,7 +196,7 @@ export const LayoutSettings = () => {
               )}
 
               <div
-                className={`preview-layout__navbar preview-layout__navbar--${layoutState.navbarType}`}
+                className={`preview-layout__navbar preview-layout__navbar--${layoutState.navbarMode}`}
               />
 
               <div className="preview-layout__content">
@@ -201,7 +205,7 @@ export const LayoutSettings = () => {
                 preview-layout__sidebar 
                 preview-layout__sidebar--left 
                 preview-layout__sidebar--${layoutState.leftSidebarMode} 
-                preview-layout__sidebar--${layoutState.sidebarType}
+                preview-layout__sidebar--${layoutState.sidebarMode}
               `}
                 />
 
@@ -212,7 +216,7 @@ export const LayoutSettings = () => {
                 preview-layout__sidebar 
                 preview-layout__sidebar--right 
                 preview-layout__sidebar--${layoutState.rightSidebarMode} 
-                preview-layout__sidebar--${layoutState.sidebarType}
+                preview-layout__sidebar--${layoutState.sidebarMode}
               `}
                 />
               </div>
@@ -278,6 +282,10 @@ export const LayoutSettings = () => {
     </div>
   );
 
+  const isDesktop = () => {
+    return window.innerWidth > 991;
+  };
+
   return (
     <div
       className="layout-settings layout-settings--${layoutState.theme}"
@@ -308,44 +316,70 @@ export const LayoutSettings = () => {
             <ConfigSection
               title="Navbar Type"
               options={[
-                { value: "", label: "Overlay" },
-                { value: "fixed", label: "Fixed" },
-                { value: "hidden", label: "Hidden" },
+                { value: true, label: "Fixed" },
+                { value: false, label: "Overlay" },
+                // { value: null, label: "Hidden" },
               ]}
-              section="navbarType"
-              currentValue={layoutState.navbarType}
+              section="navbarMode"
+              currentValue={layoutState.navbarMode}
             />
 
-            <ConfigSection
-              title="Sidebar Type"
-              options={[
-                { value: "overlay", label: "Overlay" },
-                { value: "fixed", label: "Fixed" },
-              ]}
-              section="sidebarType"
-              currentValue={layoutState.sidebarType}
-            />
+            {isDesktop() && (
+              <ConfigSection
+                title="Sidebar Type"
+                options={
+                  isDesktop()
+                    ? [
+                        { value: true, label: "Fixed" },
+                        { value: false, label: "Overlay" },
+                      ]
+                    : []
+                }
+                section="sidebarMode"
+                currentValue={layoutState.sidebarMode}
+              />
+            )}
 
             <ConfigSection
               title="Left Sidebar Mode"
-              options={[
-                { value: "mini-hover", label: "Mini Hover" },
-                { value: "mini", label: "Mini" },
-                { value: "mini-hover-default", label: "Mini Hover Default" },
-                { value: "default", label: "Default" },
-              ]}
+              options={
+                isDesktop()
+                  ? [
+                      { value: "auto", label: "Auto" },
+                      { value: "mini", label: "Mini" },
+                      {
+                        value: "auto-default",
+                        label: "Mini To Default",
+                      },
+                      { value: "default", label: "Default" },
+                    ]
+                  : [
+                      { value: "mini", label: "Mini" },
+                      { value: "default", label: "Default" },
+                    ]
+              }
               section="leftSidebarMode"
               currentValue={layoutState.leftSidebarMode}
             />
 
             <ConfigSection
               title="Right Sidebar Mode"
-              options={[
-                { value: "mini-hover", label: "Mini Hover" },
-                { value: "mini", label: "Mini" },
-                { value: "mini-hover-default", label: "Mini Hover Default" },
-                { value: "default", label: "Default" },
-              ]}
+              options={
+                isDesktop()
+                  ? [
+                      { value: "auto", label: "Auto" },
+                      { value: "mini", label: "Mini" },
+                      {
+                        value: "auto-default",
+                        label: "Mini To Default",
+                      },
+                      { value: "default", label: "Default" },
+                    ]
+                  : [
+                      { value: "mini", label: "Mini" },
+                      { value: "default", label: "Default" },
+                    ]
+              }
               section="rightSidebarMode"
               currentValue={layoutState.rightSidebarMode}
             />
@@ -368,7 +402,7 @@ export const LayoutSettings = () => {
                   Bar
                 </ConfigButton>
 
-                {layoutState.bottomBar.enabled && (
+                {isDesktop() && layoutState.bottomBar.enabled && (
                   <>
                     <ConfigButton
                       isActive={layoutState.bottomBar.hoverStyle === "width"}
@@ -403,9 +437,21 @@ export const LayoutSettings = () => {
                   : "Show Notification Bar"}
               </ConfigButton>
             </div>
+            <div className="config-section">
+              <div className="config-section__header">
+                <div className="config-section__header-icon">🏞️</div>
+                <h3 className="config-section__header-title">modal</h3>
+              </div>
+              <ConfigButton
+                isActive={layoutState.modalActive}
+                onClick={() => handleLayoutChange("modalActive")}
+              >
+                {layoutState.modalActive ? "Hide modal" : "Show modal"}
+              </ConfigButton>
+            </div>
           </div>
 
-          <div className="config-section mobile-settings">
+          {/* <div className="config-section mobile-settings">
             <ConfigSection
               title="Mobile Left Sidebar"
               options={[
@@ -438,7 +484,7 @@ export const LayoutSettings = () => {
               currentValue={layoutState.mobileBottomBar}
               // icon={Menu}
             />
-          </div>
+          </div> */}
 
           <div className="config-section mobile-settings">
             <div className="config-section__header">
@@ -488,4 +534,81 @@ export const Dropdown = (props) => {
   );
 };
 
-// ===
+export const LayoutSearchbar = ({ searchbarRef }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const { layoutState, setLayoutState } = useContext(LayoutContext);
+
+  // Filter menu items based on search term
+  const filterMenuItems = (items, term) => {
+    return items
+      ?.map((item) => {
+        if (item.seperator) return item;
+
+        const matchesSearch = item.label
+          .toLowerCase()
+          .includes(term.toLowerCase());
+        const filteredItems = item.items
+          ? filterMenuItems(item.items, term)
+          : null;
+
+        if (matchesSearch || (filteredItems && filteredItems.length > 0)) {
+          return {
+            ...item,
+            items: filteredItems,
+          };
+        }
+
+        return null;
+      })
+      .filter(Boolean);
+  };
+
+  // Memoize filtered menu items to avoid recalculating on each render
+  const filteredMenuItems = useMemo(
+    () => (searchTerm ? filterMenuItems(menuitem, searchTerm) : []),
+    [searchTerm, menuitem]
+  );
+
+  // Update layout state only when filteredMenuItems changes
+  useMemo(() => {
+    setLayoutState((prevState) => ({
+      ...prevState,
+      searchSidebarItems: filteredMenuItems,
+    }));
+  }, [filteredMenuItems, setLayoutState]);
+
+  const hasSearchResults = filteredMenuItems?.length > 0;
+  console.log("searchSidebarItems :", layoutState?.searchSidebarItems);
+
+  return (
+    <div ref={searchbarRef} className="layout__searchbar">
+      <div className="searchbar-container">
+        <input
+          type="text"
+          className="searchbar-input"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search menu items..."
+          spellCheck="false"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              console.log(searchTerm);
+            }
+          }}
+        />
+        <div className="icon-container">
+          <div className="icon">
+            {searchTerm && !hasSearchResults ? (
+              <i
+                className="pi pi-exclamation-triangle"
+                style={searchTerm && !hasSearchResults ? { color: "red" } : {}}
+              ></i>
+            ) : (
+              <i className="pi pi-search search-icon"></i>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

@@ -1,10 +1,20 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useContext } from "react";
 import { MenuProvider } from "./context/menucontext";
 import AppMenuitem from "./AppMenuitem";
 import { menuitem } from "@/public/layout/data";
+import { LayoutContext } from "./context/layoutcontext";
+import { LayoutSearchbar } from "./utils";
 
 const AppSidebar = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { layoutState, setLayoutState } = useContext(LayoutContext);
+
+  const activeSearchbar = () => {
+    setLayoutState((prevState) => ({
+      ...prevState, // spread previous state to retain other properties
+      hoverSearchbar: !prevState.hoverSearchbar, // toggle hoverSearchbar
+    }));
+  };
 
   const filterMenuItems = (items, term) => {
     return items
@@ -43,44 +53,19 @@ const AppSidebar = () => {
   return (
     <MenuProvider>
       <div className="sidebar-menu-container">
-        <div className="searchbar-container">
-          <input
-            type="text"
-            className="searchbar-input"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search menu items..."
-          />
-          <div className="icon-container">
-            <div className="icon">
-              {searchTerm && !hasSearchResults ? (
-                <i className="pi pi-exclamation-triangle"></i>
-              ) : (
-                <i className="pi pi-search search-icon"></i>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="menu-content">
-          <ul className="sidebar-menu">
-            {(searchTerm && hasSearchResults
-              ? filteredMenuItems
-              : menuitem
-            )?.map((item, i) =>
-              !item?.seperator ? (
-                <AppMenuitem
-                  item={item}
-                  root={true}
-                  index={i}
-                  key={item.label}
-                />
-              ) : (
-                <li key={`separator-${i}`} className="menu-separator"></li>
-              )
-            )}
-          </ul>
-        </div>
+        <ul className="sidebar-menu">
+          {(layoutState?.searchSidebarItems.length !== 0
+            ? layoutState?.searchSidebarItems
+            : menuitem
+          )?.map((item, i) =>
+            !item?.seperator ? (
+              <AppMenuitem item={item} root={true} index={i} key={item.label} />
+            ) : (
+              <li key={`separator-${i}`} className="menu-separator"></li>
+            )
+          )}
+          <div className="menuDummyItem" />
+        </ul>
       </div>
     </MenuProvider>
   );

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useEffect } from "react";
 
 export const LayoutContext = createContext({});
 
@@ -7,71 +7,50 @@ export const LayoutProvider = ({ children }) => {
   const [layoutConfig, setLayoutConfig] = useState({
     ripple: false,
     inputStyle: "outlined",
-    menuMode: "auto",
-    navbarMode: "static",
     colorScheme: "light",
     theme: "lara-light-indigo",
     scale: 14,
+    toggleSidebarLeft: true,
+    toggleSidebarRight: true,
   });
 
   const [layoutState, setLayoutState] = useState({
-    // staticMenuDesktopInactive: false,
-    // staticMenuMobileActive: false,
-    // overlayMenuActive: false,
-    // profileSidebarVisible: false,
-    // configSidebarVisible: false,
-    // menuHoverActive: false,
-    // modalActive: false,
-
-    navbarType: "",
-    sidebarType: "overlay",
-    leftSidebarMode: "mini-hover",
-    rightSidebarMode: "mini-hover",
-    mobileLeftSidebarMode: "m-mini",
-    mobileRightSidebarMode: "m-mini",
-    mobileBottomBar: "disable",
+    navbarMode: true,
+    sidebarMode: true,
+    leftSidebarMode: "auto",
+    rightSidebarMode: "auto",
     bottomBar: {
-      enabled: false,
-      hoverStyle: "width",
+      enabled: true,
+      hoverStyle: "both",
     },
     notificationBar: false,
-    activeModal: false,
-    theme: "light",
-    direction: "ltr",
+    modalActive: false,
+    searchSidebarItems: [],
   });
 
-  console.log("layoutState :", layoutState);
+  useEffect(() => {
+    document.documentElement.style.fontSize = layoutConfig.scale + "px";
+  }, [layoutConfig.scale]);
 
-  const [mouseOverLabelName, setMouseOverLabelName] = useState("");
-  console.log("mouseOverLabelName :", mouseOverLabelName);
-
-  const isDesktop = () => {
-    return window.innerWidth > 991;
-  };
-
-  const isOverlay = () => {
-    return layoutConfig.menuMode === "overlay";
-  };
-
-  const onMenuToggle = () => {
-    if (isDesktop()) {
-      setLayoutState((prevLayoutState) => ({
+  const onMenuToggle = (type) => {
+    setLayoutState((prevLayoutState) => {
+      const newState = {
         ...prevLayoutState,
-        staticMenuDesktopInactive: !prevLayoutState.staticMenuDesktopInactive,
-      }));
-    } else {
-      setLayoutState((prevLayoutState) => ({
-        ...prevLayoutState,
-        staticMenuMobileActive: !prevLayoutState.staticMenuMobileActive,
-      }));
-    }
-
-    if (isOverlay()) {
-      setLayoutState((prevLayoutState) => ({
-        ...prevLayoutState,
-        overlayMenuActive: !prevLayoutState.overlayMenuActive,
-      }));
-    }
+        ...(type === "left" && {
+          toggleSidebarLeft: !prevLayoutState.toggleSidebarLeft,
+        }),
+        ...(type === "right" && {
+          toggleSidebarRight: !prevLayoutState.toggleSidebarRight,
+        }),
+      };
+      if (
+        newState.toggleSidebarLeft !== prevLayoutState.toggleSidebarLeft ||
+        newState.toggleSidebarRight !== prevLayoutState.toggleSidebarRight
+      ) {
+        return newState;
+      }
+      return prevLayoutState;
+    });
   };
 
   const showProfileSidebar = () => {
@@ -88,8 +67,6 @@ export const LayoutProvider = ({ children }) => {
     setLayoutState,
     onMenuToggle,
     showProfileSidebar,
-    mouseOverLabelName,
-    setMouseOverLabelName,
   };
 
   return (
