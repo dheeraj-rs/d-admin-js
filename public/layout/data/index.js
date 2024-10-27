@@ -6,7 +6,7 @@ export const menuitem = [
       {
         label: "Dashboard",
         icon: "pi pi-home",
-        to: "/admin",
+        to: "/demo",
       },
     ],
   },
@@ -24,7 +24,7 @@ export const menuitem = [
         label: "Basic",
         icon: "pi pi-globe",
         to: "/basic",
-        target: "_blank",
+        // target: "_blank",
       },
     ],
   },
@@ -39,7 +39,7 @@ export const menuitem = [
           {
             label: "Form Layout",
             icon: "pi pi-id-card",
-            to: "/uielements",
+            to: "/formlayout",
           },
           {
             label: "Input",
@@ -174,12 +174,13 @@ export const menuitem = [
         label: "drjicons",
         icon: "pi pi-desktop",
         url: "https://www.npmjs.com/package/drjicons",
+        // target: "_blank",
       },
       {
         label: "drjFlex",
         icon: "pi pi-desktop",
         url: "https://www.npmjs.com/package/drjflex",
-        target: "_blank",
+        // target: "_blank",
       },
     ],
   },

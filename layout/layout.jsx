@@ -1,7 +1,7 @@
+// Layout.js
 "use client";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, Suspense } from "react";
 import { LayoutContext } from "./context/layoutcontext";
-import { usePathname, useSearchParams } from "next/navigation";
 import { classNames } from "@/utils";
 import AppTopbar from "./AppTopbar";
 import AppSidebar from "./AppSidebar";
@@ -9,31 +9,29 @@ import AppFooter from "./AppFooter";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import { LayoutSearchbar } from "./utils";
+import { useRouter, usePathname } from "next/navigation";
 
 function Layout({ children }) {
   const { layoutState, setLayoutState, mouseOverLabelName } =
     useContext(LayoutContext);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const topbarRef = useRef(null);
   const leftSidebarRef = useRef(null);
   const rightSidebarRef = useRef(null);
   const bottomBarRef = useRef(null);
   const searchbarRef = useRef(null);
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   // Handle outside clicks for both sidebars
   useEffect(() => {
     function handleClickOutside(event) {
-      // Check if in mobile mode or overlay type
       const shouldHandleOutsideClick =
         window.innerWidth < 991 || !layoutState.sidebarMode;
 
-      // Check if the click is on the searchbar or its children
       const isSearchbarClick = searchbarRef.current?.contains(event.target);
 
       if (shouldHandleOutsideClick && !isSearchbarClick) {
-        // Check if click is outside left sidebar
         if (
           leftSidebarRef.current &&
           !leftSidebarRef.current.contains(event.target) &&
@@ -45,7 +43,6 @@ function Layout({ children }) {
           }));
         }
 
-        // Check if click is outside right sidebar
         if (
           rightSidebarRef.current &&
           !rightSidebarRef.current.contains(event.target) &&
@@ -59,7 +56,6 @@ function Layout({ children }) {
       }
     }
 
-    // Add event listener if either sidebar is open and (in mobile mode or overlay type)
     if (
       (window.innerWidth < 991 || !layoutState.sidebarMode) &&
       (layoutState.toggleSidebarLeft || layoutState.toggleSidebarRight)
@@ -67,7 +63,6 @@ function Layout({ children }) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
-    // Cleanup function
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -80,7 +75,6 @@ function Layout({ children }) {
   ]);
 
   const hideMenu = () => {
-    // Hide menu if in mobile mode or overlay type
     if (window.innerWidth < 991 || !layoutState.sidebarMode) {
       setLayoutState((prevLayoutState) => ({
         ...prevLayoutState,
@@ -113,7 +107,7 @@ function Layout({ children }) {
       hideMenu();
     }
     hideProfileMenu();
-  }, [pathname, searchParams]);
+  }, [pathname, layoutState.mobileActive, layoutState.sidebarMode]);
 
   // Handle body scroll
   useEffect(() => {
@@ -147,46 +141,35 @@ function Layout({ children }) {
   } = layoutState || {};
 
   const containerClass = classNames("layout-wrapper", {
-    // Sidebar states
     "toggle__sidebar-left": toggleSidebarLeft,
     "toggle__sidebar-right": toggleSidebarRight,
     "layout__sidebar-overlay": sidebarMode === false,
     "layout__sidebar-static": sidebarMode === true,
-
-    // Left Sidebar modes
     "layout__sidebar-auto-overlay-active": leftSidebarMode === "auto",
     "layout__sidebar-mini-active": leftSidebarMode === "mini",
     "layout__sidebar-auto-to-default-active":
       leftSidebarMode === "auto-default",
     "layout__sidebar-default-active": leftSidebarMode === "default",
-
-    // Right Sidebar modes
     "layout__sidebar-right-auto-overlay-active": rightSidebarMode === "auto",
     "layout__sidebar-right-mini-active": rightSidebarMode === "mini",
     "layout__sidebar-right-auto-to-default-active":
       rightSidebarMode === "auto-default",
     "layout__sidebar-right-default-active": rightSidebarMode === "default",
-
-    // Navbar modes
     "layout__topbar-fixed": navbarMode === true,
     "layout__topbar-hidden": navbarMode === null,
-
-    // Bottom bar states
     "layout__bottombar-active layout__bottombar-mobile-active":
       bottomBar?.enabled,
     "layout__bottombar-hover-width-active":
       bottomBar?.hoverStyle === "width" && bottomBar?.enabled,
     "layout__bottombar-hover-width-and-hight-active":
       bottomBar?.hoverStyle === "both" && bottomBar?.enabled,
-
-    // Additional layout states
     "layout__notification-bar-active": notificationBar === true,
     "layout__modal-active": modalActive,
     "layout__searchbar-active": hoverSearchbar,
     "layout__mobile-active": mobileActive,
   });
 
-  const notificationText = `You are being redirected to the authorized application. If your browser does not redirect you back, please visit this setup page to continue. You are being redirected to the authorized application. If your browser does not redirect you back, please visit this setup page to continue.`;
+  const notificationText = `You are being redirected to the authorized application. If your browser does not redirect you back, please visit this setup page to continue.`;
 
   return (
     <div className={`${containerClass} toggle__bottombar-right`}>
@@ -224,7 +207,6 @@ function Layout({ children }) {
         <div className="layout__content">
           <div className="layout__content-inner">
             {children}
-
             <AppFooter />
           </div>
         </div>
@@ -241,4 +223,10 @@ function Layout({ children }) {
   );
 }
 
-export default Layout;
+export function AdminLayout({ children }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Layout>{children}</Layout>
+    </Suspense>
+  );
+}
