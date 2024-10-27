@@ -78,7 +78,7 @@ export const menuitem = [
             icon: "pi pi-comment",
             to: "/message",
           },
-          { label: "File", icon: "pi pi-file", to: " /landing" },
+          { label: "File", icon: "pi pi-file", to: "/landing" },
           {
             label: "Chart",
             icon: "pi pi-chart-bar",
