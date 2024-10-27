@@ -12,6 +12,10 @@ export default function RootLayout({ children }) {
           href={`/themes/lara-light-indigo/theme.css`}
           rel="stylesheet"
         />
+        {/* <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+        /> */}
       </head>
       <body>
         <LayoutProvider>{children}</LayoutProvider>

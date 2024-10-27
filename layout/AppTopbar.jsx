@@ -129,7 +129,6 @@ const AppTopbar = forwardRef((props, ref) => {
           icon="pi-bars"
           onClick={handleRightMenuToggle}
         />
-        <TopbarButton icon="pi-user" onClick={toggleConfig} label="Profile" />
         <Dropdown
           button={<i className="pi pi-cog" />}
           className="p-link layout-topbar-button"

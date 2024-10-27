@@ -222,8 +222,11 @@ function Layout({ children }) {
         </header>
 
         <div className="layout__content">
-          <div className="layout__content-inner">{children}</div>
-          <AppFooter />
+          <div className="layout__content-inner">
+            {children}
+
+            <AppFooter />
+          </div>
         </div>
 
         <div ref={bottomBarRef} className="layout__bottombar">
