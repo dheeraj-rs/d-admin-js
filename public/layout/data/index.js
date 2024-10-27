@@ -6,7 +6,7 @@ export const menuitem = [
       {
         label: "Dashboard",
         icon: "pi pi-home",
-        to: "/",
+        to: "/admin",
       },
     ],
   },

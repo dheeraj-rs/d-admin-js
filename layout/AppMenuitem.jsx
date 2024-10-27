@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
 import { MenuContext } from "./context/menucontext";
 import { LayoutContext } from "./context/layoutcontext";
@@ -13,6 +13,7 @@ const AppMenuItem = ({ item, index, parentKey, root, className }) => {
   const searchParams = useSearchParams();
   const { activeMenu, setActiveMenu } = useContext(MenuContext);
   const { setMouseOverLabelName, layoutState } = useContext(LayoutContext);
+  const nodeRef = useRef(null);
 
   // Generate unique key for menu item
   const key = parentKey ? `${parentKey}-${index}` : String(index);
@@ -75,12 +76,13 @@ const AppMenuItem = ({ item, index, parentKey, root, className }) => {
 
     return (
       <CSSTransition
+        nodeRef={nodeRef}
         timeout={{ enter: 1000, exit: 450 }}
         classNames="layout-submenu"
         in={root ? true : isActive}
         key={item?.label}
       >
-        <ul>
+        <ul ref={nodeRef}>
           {item.items.map((child, i) => (
             <AppMenuItem
               key={child.label}
