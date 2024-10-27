@@ -1,149 +1,142 @@
 "use client";
+
 import Link from "next/link";
-import React, { useEffect, useContext } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useContext } from "react";
 import { CSSTransition } from "react-transition-group";
 import { MenuContext } from "./context/menucontext";
-import { usePathname, useSearchParams } from "next/navigation";
-import { classNames, Ripple } from "@/utils";
 import { LayoutContext } from "./context/layoutcontext";
+import { classNames, Ripple } from "@/utils";
 
-const AppMenuitem = (props) => {
+const AppMenuItem = ({ item, index, parentKey, root, className }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { activeMenu, setActiveMenu } = useContext(MenuContext);
-  const { setMouseOverLabelName } = useContext(LayoutContext);
-  const { layoutState } = useContext(LayoutContext);
+  const { setMouseOverLabelName, layoutState } = useContext(LayoutContext);
 
-  const item = props?.item;
-  const key = props?.parentKey
-    ? props?.parentKey + "-" + props?.index
-    : String(props.index);
+  // Generate unique key for menu item
+  const key = parentKey ? `${parentKey}-${index}` : String(index);
 
+  // Check if current route is active
   const isActiveRoute = item?.to && pathname === item?.to;
-  const active = activeMenu === key || activeMenu.startsWith(key + "-");
+  const isActive = activeMenu === key || activeMenu.startsWith(`${key}-`);
 
-  const onRouteChange = (url) => {
-    if (item?.to && item?.to === url) {
-      setActiveMenu(key);
-    }
+  // Common menu item styles
+  const menuItemStyles = {
+    overflow: "hidden",
+    position: "relative",
+  };
+
+  // Common props for both Link and anchor elements
+  const commonProps = {
+    className: classNames(item?.className, "p-ripple", {
+      "active-route": isActiveRoute,
+    }),
+    style: menuItemStyles,
+    tabIndex: 0,
+    ...(shouldShowTooltip(layoutState) && {
+      "data-tooltip-id": item?.label,
+      onMouseOver: () => setMouseOverLabelName(item?.label),
+    }),
   };
 
   useEffect(() => {
-    onRouteChange(pathname);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, searchParams]);
+    if (item?.to && item?.to === pathname) {
+      setActiveMenu(key);
+    }
+  }, [pathname, searchParams, item?.to, key, setActiveMenu]);
 
-  const itemClick = (event) => {
-    //avoid processing disabled items
+  const handleClick = (event) => {
     if (item?.disabled) {
       event.preventDefault();
       return;
     }
 
-    //execute command
-    if (item?.command) {
-      item?.command({ originalEvent: event, item: item });
-    }
+    item?.command?.({ originalEvent: event, item });
 
-    // toggle active state
-    if (item?.items) setActiveMenu(active ? props.parentKey : key);
-    else setActiveMenu(key);
+    if (item?.items) {
+      setActiveMenu(isActive ? parentKey : key);
+    } else {
+      setActiveMenu(key);
+    }
   };
 
-  const subMenu = item?.items && item?.visible !== false && (
-    <CSSTransition
-      timeout={{ enter: 1000, exit: 450 }}
-      classNames="layout-submenu"
-      in={props.root ? true : active}
-      key={item?.label}
-    >
-      <ul>
-        {item?.items.map((child, i) => {
-          return (
-            <AppMenuitem
+  const renderMenuContent = () => (
+    <>
+      <i className={classNames("layout-menuitem-icon", item?.icon)} />
+      <span className="layout-menuitem-text">{item?.label}</span>
+      {item?.items && <i className="pi pi-angle-down layout-submenu-toggler" />}
+      <Ripple />
+    </>
+  );
+
+  const renderSubMenu = () => {
+    if (!item?.items || item?.visible === false) return null;
+
+    return (
+      <CSSTransition
+        timeout={{ enter: 1000, exit: 450 }}
+        classNames="layout-submenu"
+        in={root ? true : isActive}
+        key={item?.label}
+      >
+        <ul>
+          {item.items.map((child, i) => (
+            <AppMenuItem
+              key={child.label}
               item={child}
               index={i}
               className={child.badgeClass}
               parentKey={key}
-              key={child.label}
             />
-          );
-        })}
-      </ul>
-    </CSSTransition>
-  );
-
-  const container = {
-    overflow: "hidden",
-    position: "relative",
+          ))}
+        </ul>
+      </CSSTransition>
+    );
   };
+
+  if (item?.visible === false) return null;
 
   return (
     <li
       className={classNames({
-        "layout-root-menuitem": props?.root,
-        "active-menuitem": active,
+        "layout-root-menuitem": root,
+        "active-menuitem": isActive,
       })}
     >
-      {props?.root && item?.visible !== false && (
-        <div className="layout-menuitem-root-text">{item?.label}</div>
-      )}
-      {(!item?.to || item?.items) && item?.visible !== false ? (
+      {root && <div className="layout-menuitem-root-text">{item?.label}</div>}
+
+      {(!item?.to || item?.items) && (
         <a
           href={item?.url}
-          onClick={(e) => itemClick(e)}
-          className={classNames(item?.className, "p-ripple")}
-          style={container}
+          onClick={handleClick}
           target={item?.target}
-          tabIndex={0}
-          {...(layoutState?.leftSidebarMode === "mini" ||
-          (layoutState?.mobileLeftSidebarMode === "m-mini" &&
-            window.innerWidth <= 991)
-            ? {
-                "data-tooltip-id": item?.label,
-                onMouseOver: () => setMouseOverLabelName(item?.label),
-              }
-            : null)}
+          {...commonProps}
         >
-          <i className={classNames("layout-menuitem-icon", item?.icon)}></i>
-          <span className="layout-menuitem-text">{item?.label}</span>
-          {item?.items && (
-            <i className="pi pi-angle-down layout-submenu-toggler"></i>
-          )}
-          <Ripple />
+          {renderMenuContent()}
         </a>
-      ) : null}
-      {item?.to && !item?.items && item?.visible !== false ? (
+      )}
+
+      {item?.to && !item?.items && (
         <Link
           href={item?.to}
           replace={item?.replaceUrl}
           target={item?.target}
-          onClick={(e) => itemClick(e)}
-          className={classNames(item?.className, "p-ripple", {
-            "active-route": isActiveRoute,
-          })}
-          style={container}
-          tabIndex={0}
-          {...(layoutState?.leftSidebarMode === "mini" ||
-          (layoutState?.mobileLeftSidebarMode === "m-mini" &&
-            window.innerWidth <= 991)
-            ? {
-                "data-tooltip-id": item?.label,
-                onMouseOver: () => setMouseOverLabelName(item?.label),
-              }
-            : null)}
+          onClick={handleClick}
+          {...commonProps}
         >
-          <i className={classNames("layout-menuitem-icon", item?.icon)}></i>
-          <span className="layout-menuitem-text">{item?.label}</span>
-          {item?.items && (
-            <i className="pi  pi-angle-down layout-submenu-toggler"></i>
-          )}
-          <Ripple />
+          {renderMenuContent()}
         </Link>
-      ) : null}
-      {subMenu}
+      )}
+
+      {renderSubMenu()}
     </li>
   );
 };
 
-export default AppMenuitem;
+// Helper function to determine if tooltip should be shown
+const shouldShowTooltip = (layoutState) => {
+  return layoutState?.leftSidebarMode === "mini" || layoutState?.mobileActive;
+};
+
+export default AppMenuItem;

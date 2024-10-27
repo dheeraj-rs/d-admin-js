@@ -1,23 +1,20 @@
-/* eslint-disable react/no-children-prop */
-import React, {
-  forwardRef,
-  useContext,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from "react";
+import React, { forwardRef, useContext, useCallback, memo } from "react";
 import { LayoutContext } from "./context/layoutcontext";
 import { classNames, Dropdown } from "@/utils";
 import { menuitem } from "@/public/layout/data";
 import AppConfigbox from "./AppConfigbox";
 
-const NavbarItem = ({ item }) => {
-  const [isOpen, setIsOpen] = useState(false);
+// Separate NavbarItem into a memoized component
+const NavbarItem = memo(({ item }) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const handleMouseEnter = useCallback(() => setIsOpen(true), []);
+  const handleMouseLeave = useCallback(() => setIsOpen(false), []);
 
-  const handleMouseEnter = () => setIsOpen(true);
-  const handleMouseLeave = () => setIsOpen(false);
+  if (!item) return null;
 
-  if (item?.items) {
+  const renderIcon = (iconClass) => iconClass && <i className={iconClass} />;
+
+  if (item.items) {
     return (
       <li
         className="navbar-item"
@@ -25,14 +22,14 @@ const NavbarItem = ({ item }) => {
         onMouseLeave={handleMouseLeave}
       >
         <span className="navbar-link">
-          {item.icon && <i className={item.icon}></i>}
+          {renderIcon(item.icon)}
           {item.label}
-          <i className="pi pi-angle-down"></i>
+          <i className="pi pi-angle-down" />
         </span>
         {isOpen && (
           <ul className="navbar-submenu">
             {item.items.map((subItem, index) => (
-              <NavbarItem key={index} item={subItem} />
+              <NavbarItem key={`${subItem.label}-${index}`} item={subItem} />
             ))}
           </ul>
         )}
@@ -43,49 +40,69 @@ const NavbarItem = ({ item }) => {
   return (
     <li className="navbar-item">
       <a href={item.to} className="navbar-link" target={item.target}>
-        {item.icon && <i className={item.icon}></i>}
+        {renderIcon(item.icon)}
         {item.label}
       </a>
     </li>
   );
-};
+});
+
+NavbarItem.displayName = "NavbarItem";
+
+// Separate TopbarButton into a forwarded ref component
+const TopbarButton = forwardRef(
+  ({ icon, onClick, label, className = "" }, ref) => (
+    <button
+      ref={ref}
+      type="button"
+      className={`p-link layout-topbar-button ${className}`}
+      onClick={onClick}
+    >
+      <i className={`pi ${icon}`} />
+      {label && <span>{label}</span>}
+    </button>
+  )
+);
+
+TopbarButton.displayName = "TopbarButton";
 
 const AppTopbar = forwardRef((props, ref) => {
-  const { layoutConfig, onMenuToggle, setLayoutConfig, showProfileSidebar } =
+  const { layoutConfig, onMenuToggle, setLayoutConfig } =
     useContext(LayoutContext);
-  const [toggle, setToggle] = useState(false);
 
-  const menubuttonRef = useRef(null);
-  const topbarmenuRef = useRef(null);
-  const topbarmenubuttonRef = useRef(null);
+  // Create individual refs
+  const menuButtonRef = React.useRef(null);
+  const topbarMenuRef = React.useRef(null);
+  const topbarMenuButtonRef = React.useRef(null);
 
-  useImperativeHandle(ref, () => ({
-    menubutton: menubuttonRef.current,
-    topbarmenu: topbarmenuRef.current,
-    topbarmenubutton: topbarmenubuttonRef.current,
+  // Expose refs through useImperativeHandle
+  React.useImperativeHandle(ref, () => ({
+    menubutton: menuButtonRef.current,
+    topbarmenu: topbarMenuRef.current,
+    topbarmenubutton: topbarMenuButtonRef.current,
   }));
 
-  const ToggleConfigBtn = () => {
-    setLayoutConfig((prevLayoutState) => ({
-      ...prevLayoutState,
-      configSidebarVisible: !prevLayoutState.configSidebarVisible,
+  const toggleConfig = useCallback(() => {
+    setLayoutConfig((prevState) => ({
+      ...prevState,
+      configSidebarVisible: !prevState.configSidebarVisible,
     }));
-  };
+  }, [setLayoutConfig]);
+
+  const handleLeftMenuToggle = useCallback(() => {
+    onMenuToggle("left");
+  }, [onMenuToggle]);
+
+  const handleRightMenuToggle = useCallback(() => {
+    onMenuToggle("right");
+  }, [onMenuToggle]);
+
+  const topbarMenuClassName = classNames("layout-topbar-menu", {
+    "layout-topbar-menu-mobile-active": layoutConfig.profileSidebarVisible,
+  });
 
   return (
     <div className="topbar-main">
-      {/* <Link href="/" className="layout-topbar-logo">
-        <img
-          src={`/layout/images/logo-${
-            layoutConfig.colorScheme !== "light" ? "white" : "dark"
-          }.svg`}
-          width="47.22px"
-          height="35px"
-          alt="logo"
-        />
-        <span>DHEERAJ</span>
-      </Link> */}
-
       <div className="topbar-header">
         <nav className="breadcrumb">
           <span className="breadcrumb-link">Pages</span> / Main Page
@@ -93,69 +110,37 @@ const AppTopbar = forwardRef((props, ref) => {
         <h1 className="title">Main Page</h1>
       </div>
 
-      <button
-        ref={menubuttonRef}
-        type="button"
-        className="p-link layout-menu-button layout-topbar-button"
-        onClick={() => onMenuToggle("left")}
-      >
-        <i className="pi pi-bars" />
-      </button>
+      <TopbarButton
+        ref={menuButtonRef}
+        icon="pi-bars"
+        onClick={handleLeftMenuToggle}
+        className="layout-menu-button"
+      />
 
       <ul className="navbar-menu">
         {menuitem.map((item, index) => (
-          <NavbarItem key={index} item={item} />
+          <NavbarItem key={`${item.label}-${index}`} item={item} />
         ))}
       </ul>
 
-      {/* <button
-        ref={topbarmenubuttonRef}
-        type="button"
-        className="p-link layout-topbar-menu-button layout-topbar-button"
-        onClick={showProfileSidebar}
-      >
-        <i className="pi pi-ellipsis-v" />
-      </button> */}
-
-      <div
-        ref={topbarmenuRef}
-        className={classNames("layout-topbar-menu", {
-          "layout-topbar-menu-mobile-active":
-            layoutConfig.profileSidebarVisible,
-        })}
-      >
-        {" "}
-        <button
-          ref={menubuttonRef}
-          type="button"
-          className="p-link layout-menu-button layout-topbar-button"
-          onClick={() => onMenuToggle("right")}
-        >
-          <i className="pi pi-bars" />
-        </button>
-        <button
-          type="button"
-          className="p-link layout-topbar-button"
-          onClick={ToggleConfigBtn}
-        >
-          <i className="pi pi-user"></i>
-          <span>Profile</span>
-        </button>
-        <Dropdown
-          button={<i className="pi pi-cog"></i>}
-          className="p-link layout-topbar-button "
-          children={<AppConfigbox />}
+      <div ref={topbarMenuRef} className={topbarMenuClassName}>
+        <TopbarButton
+          ref={topbarMenuButtonRef}
+          icon="pi-bars"
+          onClick={handleRightMenuToggle}
         />
+        <TopbarButton icon="pi-user" onClick={toggleConfig} label="Profile" />
+        <Dropdown
+          button={<i className="pi pi-cog" />}
+          className="p-link layout-topbar-button"
+        >
+          <AppConfigbox />
+        </Dropdown>
       </div>
-
-      {/* <Dropdown
-        button={<i className="pi pi-ellipsis-v" />}
-        className="p-link layout-topbar-menu-button"
-        children={<AppConfigbox />}
-      /> */}
     </div>
   );
 });
 
 AppTopbar.displayName = "AppTopbar";
-export default AppTopbar;
+
+export default memo(AppTopbar);

@@ -113,23 +113,24 @@ function Layout({ children }) {
       hideMenu();
     }
     hideProfileMenu();
-  }, [
-    pathname,
-    searchParams,
-    layoutState.sidebarMode,
-    layoutState.mobileActive,
-  ]);
+  }, [pathname, searchParams]);
 
   // Handle body scroll
   useEffect(() => {
-    if (layoutState.staticMenuMobileActive || layoutState.mobileActive) {
+    if (
+      layoutState.mobileActive?.toggleSidebarRight ||
+      layoutState.mobileActive?.toggleSidebarLeft
+    ) {
       blockBodyScroll();
     }
 
     return () => {
       unblockBodyScroll();
     };
-  }, [layoutState.staticMenuMobileActive, layoutState.mobileActive]);
+  }, [
+    layoutState.mobileActive?.toggleSidebarRight,
+    layoutState.mobileActive?.toggleSidebarLeft,
+  ]);
 
   const {
     toggleSidebarLeft,
@@ -147,8 +148,8 @@ function Layout({ children }) {
 
   const containerClass = classNames("layout-wrapper", {
     // Sidebar states
-    "toggle__sidebar-left": toggleSidebarLeft === true,
-    "toggle__sidebar-right": toggleSidebarRight === true,
+    "toggle__sidebar-left": toggleSidebarLeft,
+    "toggle__sidebar-right": toggleSidebarRight,
     "layout__sidebar-overlay": sidebarMode === false,
     "layout__sidebar-static": sidebarMode === true,
 
@@ -226,8 +227,8 @@ function Layout({ children }) {
         </div>
 
         <div ref={bottomBarRef} className="layout__bottombar">
-          <div className="layout__bottombar-content">bottombar</div>
-          <div className="layout__bottombar-mobile-content">bottombar2</div>
+          <div className="layout__bottombar-content"></div>
+          <div className="layout__bottombar-mobile-content"></div>
         </div>
       </main>
 

@@ -917,15 +917,24 @@
     }
 
     .layout__searchbar {
-      opacity: 1;
-      transform: translateX(0);
-      left: $layout-padding-default;
+      opacity: 0;
+      transform: translateX(-100%);
+      left: 0;
       bottom: $sidebar-height-mini;
+    }
 
-      .searchbar-container {
-        border-radius: $border-radius-default;
-        .searchbar-input {
+    &.toggle__sidebar-left {
+      .layout__searchbar {
+        opacity: 1;
+        transform: translateX(0);
+        left: $layout-padding-default;
+        bottom: $sidebar-height-mini;
+
+        .searchbar-container {
           border-radius: $border-radius-default;
+          .searchbar-input {
+            border-radius: $border-radius-default;
+          }
         }
       }
     }
