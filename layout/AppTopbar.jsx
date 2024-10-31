@@ -128,10 +128,18 @@ const AppTopbar = forwardRef((props, ref) => {
           ref={topbarMenuButtonRef}
           icon="pi-bars"
           onClick={handleRightMenuToggle}
+          className="layout-menu-button"
         />
         <Dropdown
-          button={<i className="pi pi-cog" />}
-          className="p-link layout-topbar-button"
+          button={
+            <button
+              ref={ref}
+              type="button"
+              className={`p-link layout-menu-button layout-topbar-button`}
+            >
+              <i className="pi pi-cog" />
+            </button>
+          }
         >
           <AppConfigbox />
         </Dropdown>

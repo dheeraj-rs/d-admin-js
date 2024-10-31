@@ -128,6 +128,7 @@
 
           &:hover {
             background-color: var(--surface-hover);
+            // border: 1px solid var(--surface-200);
           }
 
           &:focus {
@@ -358,8 +359,6 @@
 }
 
 .layout__searchbar {
-  // background-color: var(--surface-overlay);
-
   width: $sidebar-width-mini;
   height: 4rem;
   position: fixed;
@@ -432,6 +431,7 @@
       border-radius: $border-radius-default 0 $border-radius-default
         $border-radius-default;
       z-index: 997;
+      background-color: var(--surface-overlay);
 
       // Style for placeholder
       &::placeholder {
@@ -472,6 +472,7 @@
       transform: translate(-50%, -50%); /* Center-aligns the icon */
       pointer-events: none;
       color: var(--text-color);
+      // background-color: var(--surface-overlay);
       // background-color: var(--surface-overlay);
       // box-shadow: $box-shadow-default;
       // border-radius: $border-radius-default;

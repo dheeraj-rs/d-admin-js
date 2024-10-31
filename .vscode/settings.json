@@ -1,0 +1,12 @@
+{
+  "workbench.colorTheme": "Default Dark Modern",
+  "workbench.preferredHighContrastColorTheme": "Default Dark Modern",
+  "workbench.preferredDarkColorTheme": "Default Dark Modern",
+  "workbench.preferredHighContrastLightColorTheme": "Default Dark Modern",
+  "workbench.preferredLightColorTheme": "Default Dark Modern",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.editor.autoLockGroups": {
+    "gc-excelviewer-excel-editor": true,
+    "terminalEditor": false
+  }
+}

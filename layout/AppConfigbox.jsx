@@ -178,9 +178,9 @@ const AppConfigbox = () => {
 
   return (
     <div className="config-box" ref={dropdownRef}>
-      <div className="config-box__header">
+      {/* <div className="config-box__header">
         <h3>Configuration</h3>
-      </div>
+      </div> */}
       <div className="config-box__content" style={{ height: menuHeight }}>
         <CSSTransition
           in={true}

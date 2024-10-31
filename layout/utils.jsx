@@ -69,7 +69,9 @@ const ConfigSection = memo(
   ({ title, children, options, section, currentValue, onChange }) => (
     <div className="config-section">
       <div className="config-section__header">
-        <div className="config-section__header-icon">📂</div>
+        <div className="config-section__header-icon">
+          <i className="pi pi-palette"></i>
+        </div>
         <h3 className="config-section__header-title">{title}</h3>
       </div>
       <div className="config-section__grid">
@@ -144,7 +146,7 @@ const PreviewLayout = memo(({ layoutState }) => (
 PreviewLayout.displayName = "PreviewLayout";
 
 // Constants
-const SCALES = [12, 13, 14, 15, 16];
+const SCALES = [10, 11, 12, 13, 14];
 const THEMES = [
   { theme: "lara-light-indigo", label: "Light Indigo", scheme: "light" },
   { theme: "lara-dark-indigo", label: "Dark Indigo", scheme: "dark" },
@@ -422,139 +424,178 @@ export const LayoutSettings = memo(() => {
     layoutState.direction,
   ]);
 
-  return (
-    <div
-      className={`layout-settings layout-settings--${layoutState.theme}`}
-      style={{ width: "300px", height: "60vh", overflowY: "auto" }}
-    >
-      <div className="layout-settings__content">
-        <div className="preview-section">
-          <div className="preview-section__nav">
-            <button
-              onClick={() => setActivePreview("layout")}
-              className={`preview-button ${
-                activePreview === "layout"
-                  ? "preview-button--active"
-                  : "preview-button--inactive"
-              }`}
-            >
-              Layout Preview
-            </button>
-            <button
-              onClick={() => setActivePreview("config")}
-              className={`preview-button ${
-                activePreview === "config"
-                  ? "preview-button--active"
-                  : "preview-button--inactive"
-              }`}
-            >
-              Configuration
-            </button>
-          </div>
+  const ALL_SECTIONS = {
+    scale: {
+      title: "Scale Control",
+      customContent: true,
+      render: (props) => (
+        <ScaleControl
+          scale={props.layoutConfig.scale}
+          scales={SCALES}
+          onIncrease={() => props.adjustScale(1)}
+          onDecrease={() => props.adjustScale(-1)}
+        />
+      ),
+    },
+    // Add existing config sections
+    ...configSections,
+    bottomBar: {
+      title: "Bottom Bar Settings",
+      customContent: true,
+      render: (props) => (
+        <>
+          <ConfigButton
+            isActive={props.layoutState.bottomBar.enabled}
+            onClick={() => props.handleLayoutChange("bottomBar", "enabled")}
+            className="config-button--full"
+          >
+            {props.layoutState.bottomBar.enabled ? "Disable" : "Enable"} Bottom
+            Bar
+          </ConfigButton>
 
-          <div className={containerClasses}>
-            {activePreview === "layout" && (
-              <PreviewLayout layoutState={layoutState} />
-            )}
-            {activePreview === "config" && (
-              <div className="preview-config">
-                <pre className="preview-config__content">
-                  {JSON.stringify(layoutState, null, 2)}
-                </pre>
-              </div>
-            )}
-          </div>
+          {props.isDesktop && props.layoutState.bottomBar.enabled && (
+            <>
+              <ConfigButton
+                isActive={props.layoutState.bottomBar.hoverStyle === "width"}
+                onClick={() => props.handleLayoutChange("bottomBar", "width")}
+              >
+                Width Hover Effect
+              </ConfigButton>
+              <ConfigButton
+                isActive={props.layoutState.bottomBar.hoverStyle === "both"}
+                onClick={() => props.handleLayoutChange("bottomBar", "both")}
+              >
+                Full Hover Effect
+              </ConfigButton>
+            </>
+          )}
+        </>
+      ),
+    },
+    notificationBar: {
+      title: "Notification Bar",
+      customContent: true,
+      render: (props) => (
+        <ConfigButton
+          isActive={props.layoutState.notificationBar}
+          onClick={() => props.handleLayoutChange("notificationBar")}
+        >
+          {props.layoutState.notificationBar ? "Hide" : "Show"} Notification Bar
+        </ConfigButton>
+      ),
+    },
+    modal: {
+      title: "Modal",
+      customContent: true,
+      render: (props) => (
+        <ConfigButton
+          isActive={props.layoutState.modalActive}
+          onClick={() => props.handleLayoutChange("modalActive")}
+        >
+          {props.layoutState.modalActive ? "Hide" : "Show"} Modal
+        </ConfigButton>
+      ),
+    },
+    themes: {
+      title: "Themes",
+      customContent: true,
+      render: (props) => (
+        <div className="theme-buttons">
+          {THEMES.map(({ theme, label, scheme }) => (
+            <ThemeButton
+              key={theme}
+              theme={theme}
+              label={label}
+              isActive={props.layoutConfig.theme === theme}
+              onClick={() => props.changeTheme(theme, scheme)}
+            />
+          ))}
+        </div>
+      ),
+    },
+  };
+
+  return (
+    <div className={`layout-settings layout-settings--${layoutState.theme}`}>
+      <div className="layout-settings__sectionst">
+        <div className="preview-section__nav">
+          <button
+            onClick={() => setActivePreview("layout")}
+            className={`preview-button ${
+              activePreview === "layout"
+                ? "preview-button--active"
+                : "preview-button--inactive"
+            }`}
+          >
+            Layout Preview
+          </button>
+          <button
+            onClick={() => setActivePreview("config")}
+            className={`preview-button ${
+              activePreview === "config"
+                ? "preview-button--active"
+                : "preview-button--inactive"
+            }`}
+          >
+            Configuration
+          </button>
         </div>
 
-        <div className="layout-settings__sections">
-          <div className="config-section mobile-settings">
-            <ConfigSection title="Scale Control">
-              <ScaleControl
-                scale={layoutConfig.scale}
-                scales={SCALES}
-                onIncrease={() => adjustScale(1)}
-                onDecrease={() => adjustScale(-1)}
-              />
-            </ConfigSection>
+        <div className={containerClasses}>
+          {activePreview === "layout" && (
+            <PreviewLayout layoutState={layoutState} />
+          )}
+          {activePreview === "config" && (
+            <div className="preview-config">
+              <pre className="preview-config__content">
+                {JSON.stringify(layoutState, null, 2)}
+              </pre>
+            </div>
+          )}
+        </div>
+      </div>
 
-            {Object.entries(configSections)
-              .filter(([, section]) => section !== null)
-              .map(([key, section]) => (
-                <ConfigSection
-                  key={key}
-                  title={section.title}
-                  options={section.options}
-                  section={section.section}
-                  currentValue={layoutState[section.section]}
-                  onChange={handleLayoutChange}
-                />
-              ))}
+      <div className="layout-settings__sections">
+        <div className="mobile-settings">
+          {Object.entries(ALL_SECTIONS)
+            .filter(([key, section]) => key !== "themes" && section !== null)
+            .map(([key, section]) => (
+              <ConfigSection key={key} title={section.title}>
+                {section.customContent ? (
+                  section.render({
+                    layoutConfig,
+                    layoutState,
+                    handleLayoutChange,
+                    adjustScale,
+                    isDesktop,
+                    changeTheme,
+                  })
+                ) : (
+                  <React.Fragment>
+                    {section.options?.map(({ value, label }) => (
+                      <ConfigButton
+                        key={value}
+                        isActive={layoutState[section.section] === value}
+                        onClick={() =>
+                          handleLayoutChange(section.section, value)
+                        }
+                      >
+                        {label}
+                      </ConfigButton>
+                    ))}
+                  </React.Fragment>
+                )}
+              </ConfigSection>
+            ))}
+        </div>
 
-            <ConfigSection title="Bottom Bar Settings">
-              <ConfigButton
-                isActive={layoutState.bottomBar.enabled}
-                onClick={() => handleLayoutChange("bottomBar", "enabled")}
-                className="config-button--full"
-              >
-                {layoutState.bottomBar.enabled ? "Disable" : "Enable"} Bottom
-                Bar
-              </ConfigButton>
-
-              {isDesktop && layoutState.bottomBar.enabled && (
-                <>
-                  <ConfigButton
-                    isActive={layoutState.bottomBar.hoverStyle === "width"}
-                    onClick={() => handleLayoutChange("bottomBar", "width")}
-                  >
-                    Width Hover Effect
-                  </ConfigButton>
-                  <ConfigButton
-                    isActive={layoutState.bottomBar.hoverStyle === "both"}
-                    onClick={() => handleLayoutChange("bottomBar", "both")}
-                  >
-                    Full Hover Effect
-                  </ConfigButton>
-                </>
-              )}
-            </ConfigSection>
-
-            {/* Notification Bar */}
-            <ConfigSection title="Notification Bar">
-              <ConfigButton
-                isActive={layoutState.notificationBar}
-                onClick={() => handleLayoutChange("notificationBar")}
-              >
-                {layoutState.notificationBar ? "Hide" : "Show"} Notification Bar
-              </ConfigButton>
-            </ConfigSection>
-
-            {/* Modal */}
-            <ConfigSection title="Modal">
-              <ConfigButton
-                isActive={layoutState.modalActive}
-                onClick={() => handleLayoutChange("modalActive")}
-              >
-                {layoutState.modalActive ? "Hide" : "Show"} Modal
-              </ConfigButton>
-            </ConfigSection>
-          </div>
-
-          {/* Theme Settings */}
-          <div className="config-section mobile-settings">
-            <ConfigSection title="Themes">
-              <div className="theme-buttons">
-                {THEMES.map(({ theme, label, scheme }) => (
-                  <ThemeButton
-                    key={theme}
-                    theme={theme}
-                    label={label}
-                    isActive={layoutConfig.theme === theme}
-                    onClick={() => changeTheme(theme, scheme)}
-                  />
-                ))}
-              </div>
-            </ConfigSection>
-          </div>
+        <div className="mobile-settings">
+          <ConfigSection title={ALL_SECTIONS.themes.title}>
+            {ALL_SECTIONS.themes.render({
+              layoutConfig,
+              changeTheme,
+            })}
+          </ConfigSection>
         </div>
       </div>
     </div>

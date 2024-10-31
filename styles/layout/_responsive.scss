@@ -808,111 +808,20 @@
     }
   }
 
-  .layout__topbar-fixed {
-    .layout__sidebar,
-    .layout__sidebar-right {
-      margin-top: $layout-topbar-hight + $layout-padding-default;
-      height: calc(
-        100vh - (3 * $layout-padding-default + $layout-topbar-hight)
-      );
-    }
-
-    &.layout__notification-bar-active {
-      .layout__sidebar,
-      .layout__sidebar-right {
-        margin-top: $layout-topbar-hight + (2 * $layout-padding-default) +
-          $notification-topbar-height;
-        height: calc(
-          100vh -
-            (
-              #{4 * $layout-padding-default} + #{$layout-topbar-hight} + #{$notification-topbar-height}
-            )
-        );
-      }
-    }
-
-    &.layout__bottombar-mobile-active {
-      .layout__sidebar,
-      .layout__sidebar-right {
-        height: calc(
-          100vh -
-            (
-              4 * $layout-padding-default + $layout-topbar-hight +
-                $layout-bottombar-mobile-hight
-            )
-        );
-      }
-      &.layout__notification-bar-active {
-        .layout__sidebar,
-        .layout__sidebar-right {
-          margin-top: $layout-topbar-hight + (2 * $layout-padding-default) +
-            $notification-topbar-height;
-          height: calc(
-            100vh -
-              (
-                #{5 * $layout-padding-default} + #{$layout-topbar-hight} + #{$notification-topbar-height} +
-                  #{$layout-bottombar-mobile-hight}
-              )
-          );
-        }
-      }
-    }
-
-    &.layout__topbar-hidden {
-      .layout__main {
-        padding-top: $layout-padding-default;
-        .layout__topbar {
-          display: none;
-        }
-      }
-
-      .layout__sidebar,
-      .layout__sidebar-right {
-        margin-top: 0;
-        height: calc(100vh - (2 * $layout-padding-default));
-        background-color: dimgray;
-      }
-
-      &.layout__notification-bar-active {
-        .layout__sidebar,
-        .layout__sidebar-right {
-          margin-top: 0;
-          height: calc(100vh - (2 * $layout-padding-default));
-        }
-      }
-
-      &.layout__bottombar-mobile-active {
-        .layout__sidebar,
-        .layout__sidebar-right {
-          height: calc(
-            100vh -
-              (2 * $layout-padding-default + $layout-bottombar-mobile-hight)
-          );
-        }
-        &.layout__notification-bar-active {
-          .layout__sidebar,
-          .layout__sidebar-right {
-            margin-top: $layout-topbar-hight + (2 * $layout-padding-default) +
-              $notification-topbar-height;
-            height: calc(
-              100vh -
-                (
-                  #{4 * $layout-padding-default} + #{$layout-topbar-hight} + #{$notification-topbar-height} +
-                    #{$layout-bottombar-mobile-hight}
-                )
-            );
-          }
-        }
-      }
-    }
+  .config-box {
+    margin-top: calc(2 * $layout-padding-default);
   }
 
   .layout__bottombar-mobile-active {
-    .layout__sidebar,
-    .layout__sidebar-right {
+    .layout__sidebar {
       height: calc(
         100vh -
           (4 * $layout-padding-default + $layout-bottombar-mobile-hight + 4rem)
+      );
+    }
+    .layout__sidebar-right {
+      height: calc(
+        100vh - (3 * $layout-padding-default + $layout-bottombar-mobile-hight)
       );
     }
 
@@ -944,7 +853,7 @@
     }
 
     .layout__bottombar {
-      background-color: var(--surface-overlay);
+      background-color: var(--surface-ground);
       height: $layout-bottombar-mobile-hight - (2 * $layout-padding-default);
       position: fixed;
       left: 0;
