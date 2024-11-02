@@ -6,7 +6,7 @@ import { useEffect, useContext, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
 import { MenuContext } from "./context/menucontext";
 import { LayoutContext } from "./context/layoutcontext";
-import { classNames, Ripple } from "@/utils";
+import { classNames, Ripple } from "@/lib/utils";
 
 const AppMenuItem = ({ item, index, parentKey, root, className }) => {
   const pathname = usePathname();

@@ -185,3 +185,84 @@ export const menuitem = [
     ],
   },
 ];
+
+export const SettingsItems = [
+  {
+    id: "folder-main",
+    key: "main",
+    items: [
+      {
+        id: "main-settings",
+        type: "link",
+        label: "Settings",
+        icon: "cog",
+        linkedFolderId: "settings",
+        sortOrder: 1,
+      },
+      {
+        id: "main-customize",
+        type: "link",
+        label: "Customize",
+        icon: "palette",
+        linkedFolderId: "customize",
+        sortOrder: 2,
+      },
+      // {
+      //   id: "main-section",
+      //   type: "section",
+      //   label: "Configuration",
+      //   icon: "wrench",
+      //   description: "Manage your application settings",
+      //   sortOrder: 3,
+      // },
+    ],
+  },
+  {
+    id: "folder-customize",
+    key: "customize",
+    items: [
+      {
+        id: "customize-back",
+        type: "link",
+        label: "Back",
+        icon: "arrow-left",
+        linkedFolderId: "main",
+        sortOrder: 1,
+      },
+      {
+        id: "customize-content",
+        type: "component",
+        componentKey: "CustomizeSettings",
+        sortOrder: 2,
+      },
+    ],
+  },
+  {
+    id: "folder-settings",
+    key: "settings",
+    items: [
+      {
+        id: "settings-back",
+        type: "link",
+        label: "Back",
+        icon: "arrow-left",
+        linkedFolderId: "main",
+        sortOrder: 1,
+      },
+      {
+        id: "settings-content",
+        type: "component",
+        componentKey: "LayoutSettings",
+        sortOrder: 2,
+      },
+    ],
+  },
+];
+
+export const LAYOUT_SCALES = [10, 11, 12, 13, 14];
+export const LAYOUT_THEMES = [
+  { theme: "lara-light-indigo", label: "Light Indigo", scheme: "light" },
+  { theme: "lara-dark-indigo", label: "Dark Indigo", scheme: "dark" },
+  { theme: "lara-light-teal", label: "Light Teal", scheme: "light" },
+  { theme: "lara-dark-teal", label: "Dark Teal", scheme: "dark" },
+];

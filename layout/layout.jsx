@@ -2,19 +2,18 @@
 "use client";
 import React, { useContext, useEffect, useRef, Suspense } from "react";
 import { LayoutContext } from "./context/layoutcontext";
-import { classNames } from "@/utils";
+// import { classNames } from "@/utils";
 import AppTopbar from "./AppTopbar";
 import AppSidebar from "./AppSidebar";
 import AppFooter from "./AppFooter";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
-import { LayoutSearchbar } from "./utils";
 import { useRouter, usePathname } from "next/navigation";
+import { classNames, LayoutSearchbar } from "@/lib/utils";
 
 function Layout({ children }) {
   const { layoutState, setLayoutState, mouseOverLabelName } =
     useContext(LayoutContext);
-  const router = useRouter();
   const pathname = usePathname();
 
   const topbarRef = useRef(null);
@@ -127,24 +126,27 @@ function Layout({ children }) {
   ]);
 
   const {
-    toggleSidebarLeft,
-    toggleSidebarRight,
-    navbarMode,
-    sidebarMode,
+    isSidebarLeftVisible,
+    isSidebarRightVisible,
+    isNavbarFixed,
+    isSidebarFixed,
     leftSidebarMode,
     rightSidebarMode,
     bottomBar,
-    notificationBar,
-    modalActive,
-    hoverSearchbar,
-    mobileActive,
+    isNotificationBarVisible,
+    isMobileActive,
+    isModalVisible,
+    isSearchbarVisible,
+    isMobileBottomBarVisible,
   } = layoutState || {};
 
   const containerClass = classNames("layout-wrapper", {
-    "toggle__sidebar-left": toggleSidebarLeft,
-    "toggle__sidebar-right": toggleSidebarRight,
-    "layout__sidebar-overlay": sidebarMode === false,
-    "layout__sidebar-static": sidebarMode === true,
+    "toggle__sidebar-left": isSidebarLeftVisible,
+    "toggle__sidebar-right": isSidebarRightVisible,
+    "layout__topbar-fixed": isNavbarFixed,
+    "layout__topbar-hidden": isNavbarFixed === null,
+    "layout__sidebar-static": isSidebarFixed,
+    "layout__sidebar-overlay": !isSidebarFixed,
     "layout__sidebar-auto-overlay-active": leftSidebarMode === "auto",
     "layout__sidebar-mini-active": leftSidebarMode === "mini",
     "layout__sidebar-auto-to-default-active":
@@ -155,18 +157,16 @@ function Layout({ children }) {
     "layout__sidebar-right-auto-to-default-active":
       rightSidebarMode === "auto-default",
     "layout__sidebar-right-default-active": rightSidebarMode === "default",
-    "layout__topbar-fixed": navbarMode === true,
-    "layout__topbar-hidden": navbarMode === null,
-    "layout__bottombar-active layout__bottombar-mobile-active":
-      bottomBar?.enabled,
+    "layout__bottombar-active": bottomBar?.isEnabled,
+    "layout__bottombar-mobile-active": isMobileBottomBarVisible,
     "layout__bottombar-hover-width-active":
       bottomBar?.hoverStyle === "width" && bottomBar?.enabled,
     "layout__bottombar-hover-width-and-hight-active":
       bottomBar?.hoverStyle === "both" && bottomBar?.enabled,
-    "layout__notification-bar-active": notificationBar === true,
-    "layout__modal-active": modalActive,
-    "layout__searchbar-active": hoverSearchbar,
-    "layout__mobile-active": mobileActive,
+    "layout__notification-bar-active": isNotificationBarVisible,
+    "layout__mobile-active": isMobileActive,
+    "layout__modal-active": isModalVisible,
+    "layout__searchbar-active": isSearchbarVisible,
   });
 
   const notificationText = `You are being redirected to the authorized application. If your browser does not redirect you back, please visit this setup page to continue.`;

@@ -51,6 +51,36 @@ $surface-900: var(--surface-900);
     //   border-radius: 3px;
     // }
   }
+
+  &__header {
+    padding: $layout-padding-default;
+    border-bottom: 1px solid var(--surface-border);
+    background: linear-gradient(
+      to right,
+      var(--surface-50),
+      var(--surface-100)
+    );
+    border-top-left-radius: $border-radius-mobile-settings;
+    border-top-right-radius: $border-radius-mobile-settings;
+
+    p {
+      color: var(--surface-900);
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      &::before {
+        content: "";
+        width: 4px;
+        height: 1rem;
+        background-color: var(--primary-color);
+        border-radius: 2px;
+      }
+    }
+  }
 }
 // Config Menu
 .config-menu {
@@ -123,6 +153,7 @@ $surface-900: var(--surface-900);
     }
 
     &-label {
+      user-select: none;
       font-size: 0.9rem;
       color: var(--surface-700);
     }
@@ -825,6 +856,36 @@ $transition-base: all 0.3s ease;
     &__content {
       top: 2.7rem;
       right: -$layout-padding-default;
+    }
+  }
+}
+
+// _ripple.scss
+@keyframes ripple {
+  100% {
+    opacity: 0;
+    transform: scale(2.5);
+  }
+}
+
+.p-ripple {
+  .ripple {
+    &-container {
+      overflow: hidden;
+      position: relative;
+    }
+
+    &-ink {
+      display: block;
+      position: absolute;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 100%;
+      transform: scale(0);
+      pointer-events: none;
+
+      &.active {
+        animation: ripple 0.4s linear;
+      }
     }
   }
 }

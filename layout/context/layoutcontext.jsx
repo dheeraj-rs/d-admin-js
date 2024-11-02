@@ -1,107 +1,81 @@
 "use client";
 import React, {
   useState,
-  createContext,
   useEffect,
+  createContext,
   useCallback,
   useMemo,
 } from "react";
+import { useIsMobile } from "@/hooks/use-ismobile";
 
-export const LayoutContext = createContext({});
+// Create context with default values
+export const LayoutContext = createContext({
+  layoutConfig: {},
+  layoutState: {},
+  onMenuToggle: () => {},
+  mouseOverLabel: "",
+  setMouseOverLabel: () => {},
+});
 
-const initialLayoutConfig = {
-  ripple: false,
-  inputStyle: "outlined",
+// Constants
+const SIDEBAR_MODES = {
+  MINI: "mini",
+  AUTO: "auto",
+};
+
+const INITIAL_LAYOUT_CONFIG = {
   colorScheme: "light",
   theme: "lara-light-indigo",
   scale: 14,
 };
 
-const initialLayoutState = (isMobile) => ({
-  toggleSidebarLeft: isMobile ? false : true,
-  toggleSidebarRight: isMobile ? false : true,
-  navbarMode: true,
-  sidebarMode: true,
-  leftSidebarMode: isMobile ? "mini" : "auto",
-  rightSidebarMode: isMobile ? "mini" : "auto",
+// Helper function to create initial state
+const createInitialLayoutState = (isMobile) => ({
+  isSidebarLeftVisible: !isMobile,
+  isSidebarRightVisible: !isMobile,
+  isNavbarFixed: true,
+  isSidebarFixed: true,
+  leftSidebarMode: isMobile ? SIDEBAR_MODES.MINI : SIDEBAR_MODES.AUTO,
+  rightSidebarMode: isMobile ? SIDEBAR_MODES.MINI : SIDEBAR_MODES.AUTO,
   bottomBar: {
-    enabled: true,
+    isEnabled: true,
     hoverStyle: "both",
+    isMobile: isMobile,
   },
-  mobileActive: isMobile,
-  notificationBar: false,
-  modalActive: false,
+  isMobileBottomBarVisible: true,
+  isNotificationBarVisible: false,
+  isMobileActive: isMobile,
+  isModalVisible: false,
+  isSearchbarVisible: true,
   searchSidebarItems: [],
-  showTopbarMenu: false,
+  // isTopbarMenuVisible: false,
 });
-
-// Optimized mobile detection hook with SSR support
-const useIsMobile = (breakpoint = 991) => {
-  // Initialize with null or false for SSR
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    // Update the state with the actual window width on client-side
-    const checkMobile = () => setIsMobile(window.innerWidth < breakpoint);
-
-    // Initial check
-    checkMobile();
-
-    let timeoutId;
-    const handleResize = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(checkMobile, 150); // Debounce resize events
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      clearTimeout(timeoutId);
-    };
-  }, [breakpoint]);
-
-  return isMobile;
-};
 
 export const LayoutProvider = ({ children }) => {
   const isMobile = useIsMobile();
-  const [layoutConfig, setLayoutConfig] = useState(initialLayoutConfig);
+  const [layoutConfig, setLayoutConfig] = useState(INITIAL_LAYOUT_CONFIG);
   const [layoutState, setLayoutState] = useState(() =>
-    initialLayoutState(isMobile)
+    createInitialLayoutState(isMobile)
   );
-  const [mouseOverLabelName, setMouseOverLabelName] = useState("");
+  const [mouseOverLabel, setMouseOverLabel] = useState("");
 
-  // Update layout state when mobile status changes
-  useEffect(() => {
-    setLayoutState((prev) => ({
-      ...prev,
-      leftSidebarMode: isMobile ? "mini" : "auto",
-      rightSidebarMode: isMobile ? "mini" : "auto",
-      mobileActive: isMobile,
-    }));
-  }, [isMobile]);
-
-  // Handle font size updates
+  // Update font size when scale changes
   useEffect(() => {
     document.documentElement.style.fontSize = `${layoutConfig.scale}px`;
   }, [layoutConfig.scale]);
 
-  // Memoized menu toggle handler
-  const onMenuToggle = useCallback((type) => {
+  // Memoized sidebar toggle handler
+  const onMenuToggle = useCallback((sidebarType) => {
     setLayoutState((prev) => ({
       ...prev,
-      toggleSidebarLeft:
-        type === "left" ? !prev.toggleSidebarLeft : prev.toggleSidebarLeft,
-      toggleSidebarRight:
-        type === "right" ? !prev.toggleSidebarRight : prev.toggleSidebarRight,
-    }));
-  }, []);
-
-  // Memoized topbar menu handler
-  const showTopbarMenuDropdown = useCallback(() => {
-    setLayoutState((prev) => ({
-      ...prev,
-      showTopbarMenu: !prev.showTopbarMenu,
+      isSidebarLeftVisible:
+        sidebarType === "left"
+          ? !prev.isSidebarLeftVisible
+          : prev.isSidebarLeftVisible,
+      isSidebarRightVisible:
+        sidebarType === "right"
+          ? !prev.isSidebarRightVisible
+          : prev.isSidebarRightVisible,
     }));
   }, []);
 
@@ -113,17 +87,10 @@ export const LayoutProvider = ({ children }) => {
       layoutState,
       setLayoutState,
       onMenuToggle,
-      mouseOverLabelName,
-      setMouseOverLabelName,
-      showTopbarMenuDropdown,
+      mouseOverLabel,
+      setMouseOverLabel,
     }),
-    [
-      layoutConfig,
-      layoutState,
-      onMenuToggle,
-      mouseOverLabelName,
-      showTopbarMenuDropdown,
-    ]
+    [layoutConfig, layoutState, onMenuToggle, mouseOverLabel]
   );
 
   return (
@@ -133,4 +100,11 @@ export const LayoutProvider = ({ children }) => {
   );
 };
 
-export const useLayout = () => React.useContext(LayoutContext);
+// Custom hook for accessing layout context
+export const useLayout = () => {
+  const context = React.useContext(LayoutContext);
+  if (!context) {
+    throw new Error("useLayout must be used within a LayoutProvider");
+  }
+  return context;
+};

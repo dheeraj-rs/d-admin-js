@@ -1,8 +1,9 @@
 import React, { forwardRef, useContext, useCallback, memo } from "react";
 import { LayoutContext } from "./context/layoutcontext";
-import { classNames, Dropdown } from "@/utils";
+// import { classNames, Dropdown } from "@/utils";
 import { menuitem } from "@/public/layout/data";
-import AppConfigbox from "./AppConfigbox";
+import { classNames } from "@/lib/utils";
+import ConfigBox from "./components/ConfigBox";
 
 // Separate NavbarItem into a memoized component
 const NavbarItem = memo(({ item }) => {
@@ -58,7 +59,7 @@ const TopbarButton = forwardRef(
       className={`p-link layout-topbar-button ${className}`}
       onClick={onClick}
     >
-      <i className={`pi ${icon}`} />
+      <i className={`pi ${icon} `} />
       {label && <span>{label}</span>}
     </button>
   )
@@ -102,7 +103,7 @@ const AppTopbar = forwardRef((props, ref) => {
   });
 
   return (
-    <div className="topbar-main">
+    <div className="topbar-main ">
       <div className="topbar-header">
         <nav className="breadcrumb">
           <span className="breadcrumb-link">Pages</span> / Main Page
@@ -116,7 +117,6 @@ const AppTopbar = forwardRef((props, ref) => {
         onClick={handleLeftMenuToggle}
         className="layout-menu-button"
       />
-
       <ul className="navbar-menu">
         {menuitem.map((item, index) => (
           <NavbarItem key={`${item.label}-${index}`} item={item} />
@@ -130,19 +130,7 @@ const AppTopbar = forwardRef((props, ref) => {
           onClick={handleRightMenuToggle}
           className="layout-menu-button"
         />
-        <Dropdown
-          button={
-            <button
-              ref={ref}
-              type="button"
-              className={`p-link layout-menu-button layout-topbar-button`}
-            >
-              <i className="pi pi-cog" />
-            </button>
-          }
-        >
-          <AppConfigbox />
-        </Dropdown>
+        <ConfigBox />
       </div>
     </div>
   );
